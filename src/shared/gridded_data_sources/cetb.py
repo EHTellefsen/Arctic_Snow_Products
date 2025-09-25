@@ -1,7 +1,10 @@
 import xarray as xr
-from .base import DataSource
+from .base import GriddedDataSource
 
-class CETBScene(DataSource):
+class CETBScene(GriddedDataSource):
+    def __init__(self, filepath):
+        super().__init__(filepath)
+
     def load(self):
         self.data = xr.open_mfdataset(self.filepath, 
                                       combine='nested',
