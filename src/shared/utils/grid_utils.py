@@ -4,7 +4,8 @@ from pathlib import Path
 
 @dataclass
 class GridDefinition():
-    crs: str    
+    crs: str
+    coords: list    
     extent: list
     grid_cell_size: list
     rows: int
@@ -38,7 +39,8 @@ class Grid(GridDefinition):
     def _get_essential_properties(self):
         return {
             'crs': self.crs,
-            'extent': tuple(self.extent),  # Use tuple for hashability
+            'coords': tuple(self.coords),
+            'extent': tuple(self.extent),
             'grid_cell_size': tuple(self.grid_cell_size),
             'rows': self.rows,
             'cols': self.cols
@@ -57,16 +59,9 @@ class Grid(GridDefinition):
         return self.is_compatible(other)
     
     
-    def create_grid(self, coords_type='xy'):
+    def create_grid(self):
         import numpy as np
         import xarray as xr
-
-        if coords_type == 'latlon':
-            dims = ("lon", "lat")
-        elif coords_type == 'xy':
-            dims = ("x", "y")
-        else:
-            raise ValueError("coords_type must be 'xy' or 'latlon'")
 
         x_min, y_min, x_max, y_max = self.extent
         cell_size_x, cell_size_y = self.grid_cell_size
@@ -79,8 +74,8 @@ class Grid(GridDefinition):
 
         grid_ds = xr.Dataset(
             coords={
-                "x": (dims[0], x_coords),
-                "y": (dims[1], y_coords)
+                "x": ('x', x_coords),
+                "y": ('y', y_coords)
             }
         )
 

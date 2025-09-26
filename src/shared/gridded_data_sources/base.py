@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
+from ..utils.grid_utils import Grid
 
 class GriddedDataSource(ABC):
     def __init__(self):
         self.data = None
-        self.grid = None
+        self.grid = Grid.from_predefined(self.grid_id)
 
     @abstractmethod
     def load(self):
@@ -11,6 +12,6 @@ class GriddedDataSource(ABC):
         pass
 
     @abstractmethod
-    def interpolate(self, target_grid):
-        """Interpolate to a common grid or resolution"""
+    def regrid(self, target_grid):
+        """Regrid to a common grid or resolution"""
         pass

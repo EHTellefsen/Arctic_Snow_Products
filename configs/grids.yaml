@@ -3,7 +3,8 @@ EASE2_N25km:
   name: "EASE-Grid 2.0 25km North"
   description: "Equal Area Scalable Earth Grid"
   projection: "Northern Hemisphere, Lambert Azimuthal"
-  crs: "EPSG:6931"    
+  crs: "EPSG:6931"
+  coords: ["x", "y"]    
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [25000,25000]
   rows: 720
@@ -14,6 +15,7 @@ EASE2_S25km:
   description: "Equal Area Scalable Earth Grid"
   projection: "Southern Hemisphere, Lambert Azimuthal"
   crs: "EPSG:6932"
+  coords: ["x", "y"]
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [25000,25000]
   rows: 720
@@ -23,7 +25,8 @@ EASE2_N12.5km:
   name: "EASE-Grid 2.0 12.5km North"
   description: "Equal Area Scalable Earth Grid"
   projection: "Northern Hemisphere, Lambert Azimuthal"
-  crs: "EPSG:6931"    
+  crs: "EPSG:6931"
+  coords: ["x", "y"]    
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [12500,12500]
   rows: 1440
@@ -34,6 +37,7 @@ EASE2_S12.5km:
   description: "Equal Area Scalable Earth Grid"
   projection: "Southern Hemisphere, Lambert Azimuthal"
   crs: "EPSG:6932"
+  coords: ["x", "y"]
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [12500,12500]
   rows: 1440
@@ -43,7 +47,8 @@ EASE2_N6.25km:
   name: "EASE-Grid 2.0 6.25km North"
   description: "Equal Area Scalable Earth Grid"
   projection: "Northern Hemisphere, Lambert Azimuthal"
-  crs: "EPSG:6931"    
+  crs: "EPSG:6931"
+  coords: ["x", "y"]
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [6250,6250]
   rows: 2880
@@ -54,6 +59,7 @@ EASE2_S6.25km:
   description: "Equal Area Scalable Earth Grid"
   projection: "Southern Hemisphere, Lambert Azimuthal"
   crs: "EPSG:6932"
+  coords: ["x", "y"]
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [6250,6250]
   rows: 2880
@@ -64,6 +70,7 @@ EASE2_N3.125km:
   description: "Equal Area Scalable Earth Grid"
   projection: "Northern Hemisphere, Lambert Azimuthal"
   crs: "EPSG:6931"    
+  coords: ["x", "y"]  
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [3125,3125]
   rows: 5760
@@ -74,17 +81,18 @@ EASE2_S3.125km:
   description: "Equal Area Scalable Earth Grid"
   projection: "Southern Hemisphere, Lambert Azimuthal"
   crs: "EPSG:6932"
+  coords: ["x", "y"]
   extent: [-9000000, -9000000, 9000000, 9000000]
   grid_cell_size: [3125,3125]
   rows: 5760
   cols: 5760
-
 
 ERA5_global:
   name: "ERA5 Global"
   description: "Regular latitude-longitude grid"
   projection: "Geographic"
   crs: "EPSG:4326"
+  coords: ["longitude", "latitude"]
   extent: [-180, -90, 180, 90]
   grid_cell_size: [0.25, 0.25]
   rows: 721
@@ -95,6 +103,7 @@ ERA5_polar:
   description: "Regular latitude-longitude grid"
   projection: "Geographic"
   crs: "EPSG:4326"
+  coords: ["longitude", "latitude"]
   extent: [-180, 45, 180, 90]
   grid_cell_size: [0.25, 0.25]
   rows: 181
