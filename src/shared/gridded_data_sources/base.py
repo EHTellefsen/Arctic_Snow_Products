@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 class GriddedDataSource(ABC):
-    def __init__(self, filepath):
-        self.filepath = filepath
+    def __init__(self):
         self.data = None
+        self.grid = None
 
     @abstractmethod
     def load(self):
