@@ -1,14 +1,11 @@
-import os
 from pathlib import Path
 
 import xarray as xr
 
 from .base import GriddedDataSource
-from ..utils.grid_utils import Grid
 
 
 class CETBScene(GriddedDataSource):
-
     def __init__(self, filepaths):
         if isinstance(filepaths, str):
             filepaths = [filepaths]
@@ -34,14 +31,7 @@ class CETBScene(GriddedDataSource):
         self.data = self.data.drop_vars([var for var in self.data.data_vars if var != self.channel] if not keep_secondary_vars else [])
 
 
-
-    def regrid(self, target_grid):
-        target_ds = target_grid.create_grid()
-        self.data = self.data.interp(x=target_ds.x, y=target_ds.y, method='linear')
-        self.grid = target_grid
-
-
-
+    ##############################################################
     def _extract_name_metadata(self):
         tokens = [Path(file).stem.split('_') for file in self.filepaths]
         if len({len(i) for i in tokens}) != 1:

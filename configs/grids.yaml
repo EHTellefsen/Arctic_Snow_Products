@@ -93,7 +93,7 @@ ERA5_global:
   projection: "Geographic"
   crs: "EPSG:4326"
   coords: ["longitude", "latitude"]
-  extent: [-180, -90, 180, 90]
+  extent: [-180.125, -90.125, 179.875, 90.125]
   grid_cell_size: [0.25, 0.25]
   rows: 721
   cols: 1440
@@ -104,7 +104,7 @@ ERA5_polar:
   projection: "Geographic"
   crs: "EPSG:4326"
   coords: ["longitude", "latitude"]
-  extent: [-180, 45, 180, 90]
+  extent: [-180.125, 44.875, 179.875, 90.125]
   grid_cell_size: [0.25, 0.25]
   rows: 181
   cols: 1440

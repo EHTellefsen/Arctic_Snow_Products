@@ -74,9 +74,23 @@ class Grid(GridDefinition):
 
         grid_ds = xr.Dataset(
             coords={
-                "x": ('x', x_coords),
-                "y": ('y', y_coords)
+                self.coords[0]: (self.coords[0], x_coords),
+                self.coords[1]: (self.coords[1], y_coords)
             }
         )
-
         return grid_ds
+
+    def __repr__(self):
+        return f"Grid(name={self.name}, crs={self.crs}, extent={self.extent}, grid_cell_size={self.grid_cell_size}, rows={self.rows}, cols={self.cols})"
+    
+
+    def modify_extent(self, new_extent):
+        self.extent = new_extent
+        self.rows = int((new_extent[3] - new_extent[1]) / self.grid_cell_size[1])
+        self.cols = int((new_extent[2] - new_extent[0]) / self.grid_cell_size[0])
+
+
+    def modify_grid_cell_size(self, new_cell_size):
+        self.grid_cell_size = new_cell_size
+        self.rows = int((self.extent[3] - self.extent[1]) / new_cell_size[1])
+        self.cols = int((self.extent[2] - self.extent[0]) / new_cell_size[0])
