@@ -23,7 +23,7 @@ class Grid(GridDefinition):
         if filepath is None:
             # Find the project root (where configs/ folder is located)
             current_file = Path(__file__)
-            project_root = current_file.parent.parent.parent.parent  # Go up from src/shared/utils/ to project root
+            project_root = current_file.parent.parent.parent  # Go up from src/shared/utils/ to project root
             filepath = project_root / "configs" / "grids.yaml"
         
         with open(filepath, 'r') as file:

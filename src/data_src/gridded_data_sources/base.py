@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from pyproj import Transformer
 import numpy as np
 import xarray as xr
 from IPython.display import display
 
-from ..utils.grid_utils import Grid
+from utils.grid_utils import Grid
 
 class GriddedDataSource(ABC):
     def __init__(self):
@@ -22,17 +22,17 @@ class GriddedDataSource(ABC):
 
 
     # %% Grid transformation methods
-    def regrid(self, target_grid, method='linear'):
-        """Regrid data to target grid using specified interpolation method"""
-        # create grid
-        target_ds = target_grid.create_grid()
+    def regrid(self, target_grid: Grid, method: str = 'linear'):
+        """Regrid dataset to target grid using xarray interpolation.
+        !!! Note: method works for CETB and ERA5 data only as of now. Need to make more universal later. !!!
+        """
 
-        # same grid for both source and target
         if self.grid == target_grid:
             return
         
         # same CRS, different grid
-        elif self.grid.crs == target_grid.crs:
+        target_ds = target_grid.create_grid()
+        if self.grid.crs == target_grid.crs:
             self.data = self.data.interp({self.grid.coords[0]: target_ds[target_grid.coords[0]].values, self.grid.coords[1]: target_ds[target_grid.coords[1]].values}, method=method)
 
         # different CRS and grid
@@ -49,6 +49,7 @@ class GriddedDataSource(ABC):
 
         # update grid reference    
         self.grid = target_grid
+        self.data = self.data.transpose('time', self.grid.coords[1], self.grid.coords[0])
 
     def modify_extent(self, new_extent):
         self.grid.modify_extent(new_extent)
