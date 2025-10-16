@@ -5,7 +5,8 @@ import numpy as np
 from pyproj import Transformer
 from tqdm import tqdm
 
-from src.utils.bucket_tools import drop_in_bucket_resample
+from src.utils.bucket_utils import drop_in_bucket_resample
+from src.utils.grid_utils import Grid
 # %%
 #########################################################################################################################
 class PointDataSource(ABC):
@@ -45,7 +46,7 @@ class PointDataSource(ABC):
         pp_df['time'] = pd.to_datetime(pp_df['time'], errors='coerce')
         pp_df = pp_df.dropna(subset=['time', 'lat', 'lon', 'snow_depth'])
         pp_df = pp_df[pp_df['snow_depth'] > 0]
-        return pp_df[['time', 'lat', 'lon', 'snow_depth', 'snow_depth_uncertainty']].reset_index()
+        return pp_df[['time', 'lat', 'lon', 'snow_depth', 'snow_depth_uncertainty']].reset_index(drop=True)
     
 
     def get_preprocessed_SD_df(self):
@@ -61,6 +62,11 @@ class PointDataSource(ABC):
     def resample_bucket(self, target_grid, input_crs = "EPSG:4326", daily=True):
         df = self._preprocess_SD_df(self.data, self.param_dict)
 
+        if isinstance(target_grid, str):
+            target_grid = Grid.from_predefined(target_grid)
+        elif not isinstance(target_grid, Grid):
+            raise ValueError("target_grid must be a Grid object or a predefined grid ID string.")
+
         if daily:
             dates = df['time'].dt.date.unique()
             dfs = []
@@ -69,13 +75,13 @@ class PointDataSource(ABC):
                 dfs.append(drop_in_bucket_resample(cdf, target_grid))
             df = pd.concat(dfs, ignore_index=True)
         else:
-            df = drop_in_bucket_resample(df, target_grid)
+            df = drop_in_bucket_resample(df, target_grid, input_crs=input_crs)
 
-            df_name = pd.DataFrame({
-                'primary_id': [self.primary_id] * len(df),
-                'secondary_id': [self.secondary_id] * len(df)
-            })
-            df = pd.concat([df_name, df.reset_index(drop=True)], axis=1)
+        df_name = pd.DataFrame({
+            'primary_id': [self.primary_id] * len(df),
+            'secondary_id': [self.secondary_id] * len(df)
+        })
+        df = pd.concat([df_name, df.reset_index(drop=True)], axis=1)
 
         return GriddedPointDataSource(df, target_grid)
 
@@ -104,16 +110,22 @@ class GriddedPointDataSource:
             raise ValueError("Unsupported file format. Use .parquet or .csv")
         return cls(data, grid)
 
+
     # %%
-    def __add__(self, other):
-        if not isinstance(other, GriddedPointDataSource):
-            raise ValueError("Can only add GriddedPointDataSource objects.")
-        if self.grid != other.grid:
-            raise ValueError("Grids must be the same to add GriddedPointDataSource objects.")
-        if self.data.columns.tolist() != other.data.columns.tolist():
-            raise ValueError("Data columns must be the same to add GriddedPointDataSource objects.")
+    @classmethod
+    def merge_sources(cls, sources):
+        if not all(isinstance(source, GriddedPointDataSource) for source in sources):
+            raise ValueError("All sources must be GriddedPointDataSource objects.")
+        if not all(source.grid == sources[0].grid for source in sources):
+            raise ValueError("All sources must have the same grid.")
+        if not all(source.data.columns.tolist() == sources[0].data.columns.tolist() for source in sources):
+            raise ValueError("All sources must have the same data columns.")
         
-        combined_data = pd.concat([self.data, other.data], ignore_index=True)
-        return GriddedPointDataSource(combined_data, self.grid)
+        combined_data = pd.concat([source.data for source in sources], ignore_index=True)
+        return cls(combined_data, sources[0].grid)
+
+
+    def __add__(self, other):
+        return self.merge_sources([self, other])
 
 

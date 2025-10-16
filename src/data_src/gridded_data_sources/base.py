@@ -4,7 +4,7 @@ import xarray as xr
 import pickle
 from IPython.display import display
 
-from src.utils.grid import Grid
+from src.utils.grid_utils import Grid
 
 class GriddedDataSource:
     def __init__(self, grid_id: str):
