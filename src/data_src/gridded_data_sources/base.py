@@ -1,17 +1,15 @@
-from abc import ABC
-
 from pyproj import Transformer
 import numpy as np
 import xarray as xr
 import pickle
 from IPython.display import display
 
-from utils.grid_utils import Grid
+from src.utils.grid import Grid
 
-class GriddedDataSource(ABC):
-    def __init__(self):
+class GriddedDataSource:
+    def __init__(self, grid_id: str):
         self.data = None
-        self.grid = Grid.from_predefined(self.grid_id)
+        self.grid = Grid.from_predefined(grid_id)
     
     # %% display methods
     def __repr__(self):
@@ -67,15 +65,13 @@ class GriddedDataSource(ABC):
             target_ds = target_ds.assign_coords({self.grid.coords[0]: (target_grid.coords, x), self.grid.coords[1]: (target_grid.coords, y)})
 
             # # fix longitude wrapping issue for global datasets
-            # if self.grid.coords[0] == 'lon':
-            #     lon = target_ds[target_grid.coords[0]].values
-            #     if lon.max() > 180:
-            #         lon = ((lon + 180) % 360) - 180  # wrap to [-180,180)
-            #     target_ds = target_ds.assign_coords({target_grid.coords[0]: lon})
+            if self.grid.coords[0] == 'longitude':
+                lon = self.data[self.grid.coords[0]]
+                new_lon = np.concatenate([lon, lon + 360])  # or lon + 360 if in 0–360 system
 
-            #     # pad a copy shifted by +360
-            #     ds_wrap = self.data.assign_coords({self.grid.coords[0]: (self.data[self.grid.coords[0]] + 360)})
-            #     target_ds = xr.concat([self.data, ds_wrap], dim=self.grid.coords[0])
+                # Concatenate data and assign new longitude coordinate
+                self.data = xr.concat([self.data, self.data], dim="longitude")
+                self.data = self.data.assign_coords(longitude=new_lon)
 
             # interpolate data onto the reprojected grid
             self.data = self.data.interp({self.grid.coords[0]: target_ds[self.grid.coords[0]], self.grid.coords[1]: target_ds[self.grid.coords[1]]}, method=method)

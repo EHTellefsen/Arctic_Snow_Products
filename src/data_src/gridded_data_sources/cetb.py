@@ -11,7 +11,7 @@ class CETBScene(GriddedDataSource):
             filepaths = [filepaths]
         self.filepaths = filepaths
         self._extract_name_metadata()
-        super().__init__()
+        super().__init__(grid_id=self.grid_id)
 
 
     @classmethod

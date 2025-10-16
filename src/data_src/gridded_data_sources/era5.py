@@ -14,7 +14,7 @@ class ERA5Scene(GriddedDataSource):
             filepaths = [filepaths]
         self.filepaths = filepaths
         self.grid_id = grid_id
-        super().__init__()
+        super().__init__(grid_id)
 
     @classmethod
     def from_files(cls, file_paths, grid_id='ERA5_polar'):
