@@ -1,0 +1,60 @@
+10u:
+  filename: 10m_u_component_of_wind_stream-oper_daily-mean.nc
+  long_name: 10m_u_component_of_wind
+10v:
+  filename: 10m_v_component_of_wind_0_daily-mean.nc
+  long_name: 10m_v_component_of_wind
+d2m:
+  filename: 2m_dewpoint_temperature_0_daily-mean.nc
+  long_name: 2m_dewpoint_temperature
+e:
+  filename: evaporation_0_daily-mean.nc
+  long_name: evaporation
+fal:
+  filename: forecast_albedo_0_daily-mean.nc
+  long_name: forecast_albedo
+ictl1:
+  filename: ice_temperature_layer_1_0_daily-mean.nc
+  long_name: ice_temperature_layer_1
+ictl2:
+  filename: ice_temperature_layer_2_0_daily-mean.nc
+  long_name: ice_temperature_layer_2
+ictl3:
+  filename: ice_temperature_layer_3_0_daily-mean.nc
+  long_name: ice_temperature_layer_3
+ictl4:
+  filename: ice_temperature_layer_4_0_daily-mean.nc
+  long_name: ice_temperature_layer_4
+sf:
+  filename: snowfall_0_daily-mean.nc
+  long_name: snowfall
+siconc:
+  filename: sea_ice_cover_0_daily-mean.nc
+  long_name: sea_ice_cover
+skt:
+  filename: skin_temperature_0_daily-mean.nc
+  long_name: skin_temperature
+ssrd:
+  filename: surface_solar_radiation_downwards_0_daily-mean.nc
+  long_name: surface_solar_radiation_downwards
+sst:
+  filename: sea_surface_temperature_0_daily-mean.nc
+  long_name: sea_surface_temperature
+strd:
+  filename: surface_thermal_radiation_downwards_0_daily-mean.nc
+  long_name: surface_thermal_radiation_downwards
+t2m:
+  filename: 2m_temperature_0_daily-mean.nc
+  long_name: 2m_temperature
+tciw:
+  filename: total_column_cloud_ice_water_0_daily-mean.nc
+  long_name: total_column_cloud_ice_water
+tclw:
+  filename: total_column_cloud_liquid_water_0_daily-mean.nc
+  long_name: total_column_cloud_liquid_water
+tcwv:
+  filename: total_column_water_vapour_0_daily-mean.nc
+  long_name: total_column_water_vapour
+tp:
+  filename: total_precipitation_0_daily-mean.nc
+  long_name: total_precipitation

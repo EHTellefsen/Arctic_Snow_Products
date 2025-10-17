@@ -54,7 +54,7 @@ class GriddedDataSource:
         # same CRS, different grid
         target_ds = target_grid.create_grid()
         if self.grid.crs == target_grid.crs:
-            self.data = self.interp_like(target_ds, method=method)
+            self.data = self.data.interp_like(target_ds, method=method)
 
         # different CRS and grid
         else:

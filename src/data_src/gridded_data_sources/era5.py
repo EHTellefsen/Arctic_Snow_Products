@@ -1,13 +1,18 @@
 from pathlib import Path
 import zipfile
 import tempfile
+import yaml
+import os
+from collections import defaultdict
 
 import xarray as xr
 from glob import glob
+from datetime import date
 
 from .base import GriddedDataSource
 
-
+##############################################################################################
+# %% ERA5 Scene class
 class ERA5Scene(GriddedDataSource):
     def __init__(self, filepaths, grid_id='ERA5_polar'):
         if isinstance(filepaths, str):
@@ -69,3 +74,48 @@ class ERA5Scene(GriddedDataSource):
                                 engine='netcdf4')
         self.data = self.data.rename({'valid_time': 'time'})
         self.data = self.data.drop_vars(['number'])  # drop unnecessary variable
+
+
+##############################################################################################
+# %% Loading utilities
+def map_ERA5_file_dates(directory):
+    """
+    Creates a dictionary mapping each date (from filenames like ERA5_YYYYMMDD.nc)
+    to a list of all matching file paths within the directory and its subdirectories.
+    """
+    month_file_map = defaultdict(list)
+
+    for root, _, files in os.walk(directory):
+        # try to detect YYYY-MM in directory name
+        dir_name = os.path.basename(root)
+        try:
+            year, month = map(int, dir_name.split('_'))
+            for file in files:
+                if file.endswith('.nc'):
+                    full_path = os.path.join(root, file)
+                    month_file_map[(year, month)].append(full_path)
+        except ValueError:
+            # skip directories not following YYYY-MM format
+            continue
+
+    # make lookup by date easy
+    class MonthLookup(dict):
+        def __getitem__(self, key):
+            if isinstance(key, date):
+                return super().__getitem__((key.year, key.month))
+            return super().__getitem__(key)
+
+    return MonthLookup(month_file_map)
+
+
+def load_ERA5_data(ERA5_mapping, date, grid, variables = None):
+    ERA5_dict = yaml.safe_load(open('configs/ERA5_variable_dictionary.yaml'))
+    files = ERA5_mapping[date]
+    if variables is not None:
+        variable_files = [f for f in files if ERA5_dict[var]['filename'] in f for var in variables]
+    else:
+        variable_files = files
+
+    era5_ds = ERA5Scene.from_files(variable_files)
+    era5_ds.regrid(grid)
+    return era5_ds
