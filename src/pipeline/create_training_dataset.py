@@ -40,4 +40,29 @@ def split_dataset(dataset, val_frac, val_equalization, test_period):
 
 # %% run
 if __name__ == "__main__":
-    pass
+    config = yaml.safe_load(open("config/create_training_dataset.yaml"))
+
+    target_grid = Grid.from_predefined(config['target_grid'])
+
+    # %% make point data dataframe
+    # Load point data sources
+    point_sources = []
+    for source_cfg in config['point_data_sources']:
+        source = load_point_data_source(
+            filepath=source_cfg['filepath'],
+            secondary_id=source_cfg['secondary_id']
+        )
+        point_sources.append(source)
+    
+    # Grid and merge point data sources
+    gridded_point_data = grid_and_merge_point_data_sources(point_sources, target_grid)
+
+    # %% match to gridded data sources
+    dates = gridded_point_data.data['time'].dt.date.unique()
+
+    ERA5_mapping = gds.map_ERA5_file_dates(config['ERA5']['directory'], channels=config['ERA5']['channels'])
+    CETB_mapping = gds.map_CETB_file_dates(config['CETB']['directory'], channels=config['CETB']['channels'])
+    for date in dates:
+        ERA5_data = gds.load_ERA5_data(ERA5_mapping[date], target_grid)
+        CETB_data = gds.load_CETB_data(CETB_mapping[date], target_grid)
+

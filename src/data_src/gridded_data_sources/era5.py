@@ -78,20 +78,25 @@ class ERA5Scene(GriddedDataSource):
 
 ##############################################################################################
 # %% Loading utilities
-def map_ERA5_file_dates(directory):
+def map_ERA5_file_dates(directory, channels = None):
     """
     Creates a dictionary mapping each date (from filenames like ERA5_YYYYMMDD.nc)
     to a list of all matching file paths within the directory and its subdirectories.
     """
+    ERA5_dict = yaml.safe_load(open('configs/ERA5_variable_dictionary.yaml'))
     month_file_map = defaultdict(list)
 
     for root, _, files in os.walk(directory):
         # try to detect YYYY-MM in directory name
         dir_name = os.path.basename(root)
+
         try:
             year, month = map(int, dir_name.split('_'))
             for file in files:
                 if file.endswith('.nc'):
+                    if channels is not None:
+                        if not any(ERA5_dict[var]['filename'] in file for var in channels):
+                            continue
                     full_path = os.path.join(root, file)
                     month_file_map[(year, month)].append(full_path)
         except ValueError:
@@ -108,14 +113,7 @@ def map_ERA5_file_dates(directory):
     return MonthLookup(month_file_map)
 
 
-def load_ERA5_data(ERA5_mapping, date, grid, variables = None):
-    ERA5_dict = yaml.safe_load(open('configs/ERA5_variable_dictionary.yaml'))
-    files = ERA5_mapping[date]
-    if variables is not None:
-        variable_files = [f for f in files if ERA5_dict[var]['filename'] in f for var in variables]
-    else:
-        variable_files = files
-
-    era5_ds = ERA5Scene.from_files(variable_files)
+def load_ERA5_data(files, grid):
+    era5_ds = ERA5Scene.from_files(files)
     era5_ds.regrid(grid)
     return era5_ds
