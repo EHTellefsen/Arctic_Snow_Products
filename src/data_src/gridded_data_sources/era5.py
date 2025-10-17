@@ -78,7 +78,7 @@ class ERA5Scene(GriddedDataSource):
 
 ##############################################################################################
 # %% Loading utilities
-def map_ERA5_file_dates(directory, channels = None):
+def map_ERA5_files(directory, channels = None):
     """
     Creates a dictionary mapping each date (from filenames like ERA5_YYYYMMDD.nc)
     to a list of all matching file paths within the directory and its subdirectories.

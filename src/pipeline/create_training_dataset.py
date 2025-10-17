@@ -38,6 +38,7 @@ def sample_from_gridded_sources(point_source, gridded_source):
 def split_dataset(dataset, val_frac, val_equalization, test_period):
     pass
 
+
 # %% run
 if __name__ == "__main__":
     config = yaml.safe_load(open("config/create_training_dataset.yaml"))
@@ -60,9 +61,16 @@ if __name__ == "__main__":
     # %% match to gridded data sources
     dates = gridded_point_data.data['time'].dt.date.unique()
 
-    ERA5_mapping = gds.map_ERA5_file_dates(config['ERA5']['directory'], channels=config['ERA5']['channels'])
-    CETB_mapping = gds.map_CETB_file_dates(config['CETB']['directory'], channels=config['CETB']['channels'])
+    ERA5_mapping = gds.map_ERA5_files(config['ERA5']['directory'], channels=config['ERA5']['channels'])
+    CETB_mapping = gds.map_CETB_files(config['CETB']['directory'], channels=config['CETB']['channels'])
+    
+    matched_sources = []
     for date in dates:
         ERA5_data = gds.load_ERA5_data(ERA5_mapping[date], target_grid)
         CETB_data = gds.load_CETB_data(CETB_mapping[date], target_grid)
 
+        pass # !!!need to match gridded data to point data here!!!
+
+    full_dataset = pds.GriddedPointDataSource.merge_sources(matched_sources)
+
+    # %% dataset splits
