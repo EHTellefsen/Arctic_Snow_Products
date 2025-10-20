@@ -1,69 +1,94 @@
 grid: EASE2_N3.125km
 
-val_set:
-  fraction: 0.2
-  equalization:
-    primary_id: True
-    secondary_id: True
-    month: True
+datasets:
+  full_set:
+    name: "ASP_full.parquet"
+    save_directory: ./data/intermediate/datasets
 
-test_set_period:
-  start: '2022-04-01'
-  end: '2022-05-01'
+  train_set:
+    name: "ASP_train.parquet"
+    save_directory: ./data/intermediate/datasets
+
+  val_set:
+    name: "ASP_val.parquet"
+    save_directory: ./data/intermediate/datasets
+
+  test_set:
+    name: "ASP_test.parquet"
+    save_directory: ./data/intermediate/datasets
+
+split_params:
+  val_fraction: 0.2
+  val_equalization: 
+    equalization_id: 'primary_id'
+
+  test_period:
+    start: '2022-04-01'
+    end: '2022-05-01'
 
 point_data_sources:
   C2I:
     retracker: 'LARM_smoothed'
     secondary_id:
-      2020-2021: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
-      2021-2022: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
-  OIB:
-    secondary_id:
-      IDCSI4: ./data/raw/OIB_IDCSI4
-  AEM_AWI:
-    secondary_id:
-      ICEBIRD: ./data/raw/AEM-AWI-ICEBIRD_2019
-      PARARCMIP: ./data/raw/AEM-AWI-PAMARCMIP_2017
+      2020-2021: 
+        id: 2020-2021
+        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
+      2021-2022: 
+        id: 2021-2022
+        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
+  # OIB:
+  #   secondary_id:
+  #     IDCSI4: 
+  #       id: IDCSI4
+  #       filepath: ./data/raw/OIB_IDCSI4
+  # AEM_AWI:
+  #   secondary_id:
+  #     ICEBIRD: 
+  #       id: ICEBIRD
+  #       filepath: ./data/raw/AEM-AWI-ICEBIRD_2019/datasets
+  #     PAMARCMIP: 
+  #       id: PAMARCMIP
+  #       filepath: ./data/raw/AEM-AWI-PAMARCMIP_2017/datasets
 
 CETB:
   directory: ./data/raw/CETB_AMSR2
   channels:
     - 6.9H
-    - 6.9V
-    - 10.7H
-    - 10.7V
-    - 18H
-    - 18V
-    - 23H
-    - 23V
-    - 36H
-    - 36V
-    - 89H
-    - 89V
+    # - 6.9V
+    # - 10.7H
+    # - 10.7V
+    # - 18H
+    # - 18V
+    # - 23H
+    # - 23V
+    # - 36H
+    # - 36V
+    # - 89H
+    # - 89V
 
 ERA5:
-  directory: ./data/raw/ERA5_daily_all-param_1hour-sample
+  directory: ./data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
   channels:
     - 10u
-    - 10v
-    - d2m
-    - t2m
-    - tp
-    - sst
-    - skt
-    - fal
-    - siconc
-    - tcwv
-    - ssrd
-    - strd
-    - tclw
-    - tciw
-    - sf
-    - e
-    - ictl1
-    - ictl2
-    - ictl3
-    - ictl4
+    # - 10v
+    # - d2m
+    # - t2m
+    # - tp
+    # - sst
+    # - skt
+    # - fal
+    # - siconc
+    # - tcwv
+    # - ssrd
+    # - strd
+    # - tclw
+    # - tciw
+    # - sf
+    # - e
+    # - ictl1
+    # - ictl2
+    # - ictl3
+    # - ictl4
 
 derived_ERA5:
   directory: ./data/intermediate/derived_ERA5

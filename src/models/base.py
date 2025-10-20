@@ -4,7 +4,7 @@ import pandas as pd
 import xarray as xr
 import pickle
 
-from data_src.gridded_data_sources.base import GriddedDataSource
+from src.data_src.gridded_data_sources.base import GriddedDataSource
 
 class PixelPredictionModel(ABC):
     def __init__(self, model_params=None, grid=None):

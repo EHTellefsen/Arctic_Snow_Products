@@ -30,11 +30,11 @@ class AEM_AWI_ICEBIRD(PointDataSource):
         self.data = pd.concat([pd.read_table(file,skiprows=37, delimiter='\t') for file in self.files])
 
 
-class AEM_AWI_PARARCMIP(PointDataSource):
+class AEM_AWI_PAMARCMIP(PointDataSource):
     def __init__(self, files):
         self.files = files
 
-        super().__init__(primary_id='AEM_AWI', secondary_id='PARARCMIP')
+        super().__init__(primary_id='AEM_AWI', secondary_id='PAMARCMIP')
         self.param_dict = {
             'datetime': 'Date/Time (UTC, Airborne electromagnetic...)',
             'lat': 'Latitude (Airborne electromagnetic (EM)...)',

@@ -27,8 +27,10 @@ class CETBScene(GriddedDataSource):
 
     def load(self, keep_secondary_vars=False):
         self.data = xr.open_mfdataset(self.filepaths, 
+                                      concat_dim='time', 
                                       combine='nested',
                                       data_vars = "minimal",
+                                      chunks={"time": 50},
                                       engine='netcdf4')
         
         self.data = self.data.rename({'TB': self.channel})
