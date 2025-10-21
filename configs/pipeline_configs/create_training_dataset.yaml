@@ -1,19 +1,19 @@
 grid: EASE2_N3.125km
 
 datasets:
-  full_set:
+  full:
     name: "ASP_full.parquet"
     save_directory: ./data/intermediate/datasets
 
-  train_set:
+  train:
     name: "ASP_train.parquet"
     save_directory: ./data/intermediate/datasets
 
-  val_set:
+  validation:
     name: "ASP_val.parquet"
     save_directory: ./data/intermediate/datasets
 
-  test_set:
+  test:
     name: "ASP_test.parquet"
     save_directory: ./data/intermediate/datasets
 
@@ -33,62 +33,62 @@ point_data_sources:
       2020-2021: 
         id: 2020-2021
         filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
-  #     2021-2022: 
-  #       id: 2021-2022
-  #       filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
-  # OIB:
-  #   secondary_id:
-  #     IDCSI4: 
-  #       id: IDCSI4
-  #       filepath: ./data/raw/OIB_IDCSI4
-  # AEM_AWI:
-  #   secondary_id:
-  #     ICEBIRD: 
-  #       id: ICEBIRD
-  #       filepath: ./data/raw/AEM-AWI-ICEBIRD_2019/datasets
-  #     PAMARCMIP: 
-  #       id: PAMARCMIP
-  #       filepath: ./data/raw/AEM-AWI-PAMARCMIP_2017/datasets
+      2021-2022: 
+        id: 2021-2022
+        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
+  OIB:
+    secondary_id:
+      IDCSI4: 
+        id: IDCSI4
+        filepath: ./data/raw/OIB_IDCSI4
+  AEM_AWI:
+    secondary_id:
+      ICEBIRD: 
+        id: ICEBIRD
+        filepath: ./data/raw/AEM-AWI-ICEBIRD_2019/datasets
+      PAMARCMIP: 
+        id: PAMARCMIP
+        filepath: ./data/raw/AEM-AWI-PAMARCMIP_2017/datasets
 
 CETB:
   directory: ./data/raw/CETB_AMSR2
   channels:
     - 6.9H
-    # - 6.9V
-    # - 10.7H
-    # - 10.7V
-    # - 18H
-    # - 18V
-    # - 23H
-    # - 23V
-    # - 36H
-    # - 36V
-    # - 89H
-    # - 89V
+    - 6.9V
+    - 10.7H
+    - 10.7V
+    - 18H
+    - 18V
+    - 23H
+    - 23V
+    - 36H
+    - 36V
+    - 89H
+    - 89V
 
 ERA5:
   directory: ./data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
   channels:
     - u10
-    # - v10
-    # - d2m
-    # - t2m
-    # - tp
-    # - sst
-    # - skt
-    # - fal
-    # - siconc
-    # - tcwv
-    # - ssrd
-    # - strd
-    # - tclw
-    # - tciw
-    # - sf
-    # - e
-    # - ictl1
-    # - ictl2
-    # - ictl3
-    # - ictl4
+    - v10
+    - d2m
+    - t2m
+    - tp
+    - sst
+    - skt
+    - fal
+    - siconc
+    - tcwv
+    - ssrd
+    - strd
+    - tclw
+    - tciw
+    - sf
+    - e
+    - istl1
+    - istl2
+    - istl3
+    - istl4
 
 derived_ERA5:
   directory: ./data/intermediate/derived_ERA5

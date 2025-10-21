@@ -3,16 +3,24 @@ from abc import ABC, abstractmethod
 import pandas as pd
 import xarray as xr
 import pickle
+from sklearn.metrics import root_mean_squared_error
 
 from src.data_src.gridded_data_sources.base import GriddedDataSource
 
 class PixelPredictionModel(ABC):
-    def __init__(self, model_params=None, grid=None):
-        self.input_features = None
-        self.target_feature = None
+    def __init__(self,
+                 input_features=None, 
+                 target_feature=None, 
+                 weight_feature=None, 
+                 model_params=None
+                 ):
+        self.input_features = input_features
+        self.target_feature = target_feature
+        self.weight_feature = weight_feature
+        self.model_params = model_params
+
         self.model = None
-        self.model_params = model_params if model_params is not None else {}
-        self.grid = grid
+
 
     # %% Representation
     def __repr__(self):
@@ -46,27 +54,21 @@ class PixelPredictionModel(ABC):
 
     # %% Training and Prediction
     @abstractmethod
-    def train(self, X, y, weights=None):
+    def fit(self, data: pd.DataFrame, model_params: dict = None):
         pass
 
-    def predict(self, X):
+    def predict(self, data: pd.DataFrame | xr.Dataset | GriddedDataSource) -> pd.Series | xr.DataArray | GriddedDataSource:
         self._assert_initialized()
-        
-        if isinstance(X, pd.DataFrame):
-            return self._predict_pandas_dataframe(X)
-        
-        elif isinstance(X, xr.Dataset):
-            return self._predict_xarray_dataset(X)
 
-        elif isinstance(X, GriddedDataSource):
-            # Assert grid compatibility
-            if self.grid is not None:
-                if X.grid != self.grid:
-                    raise ValueError(f"Input data grid {X.grid} does not match model grid {self.grid}. Please regrid the input data.")
-            
-            y = self._predict_xarray_dataset(X.data)
-            return GriddedDataSource.from_xarray(y, X.grid)
-        
+        if isinstance(data, pd.DataFrame):
+            return self._predict_pandas_dataframe(data)
+
+        elif isinstance(data, xr.Dataset):
+            return self._predict_xarray_dataset(data)
+
+        elif isinstance(data, GriddedDataSource):
+            y = self._predict_xarray_dataset(data.data)
+            return GriddedDataSource.from_xarray(y, data.grid)
 
     def _predict_pandas_dataframe(self, X: pd.DataFrame) -> pd.Series:
         missing_features = set(self.input_features) - set(X.columns)
@@ -94,3 +96,18 @@ class PixelPredictionModel(ABC):
         y_df = X_df[dims + [self.target_feature]].set_index(dims)
         y_ds = y_df.to_xarray().reindex(coord_order)
         return y_ds
+    
+
+    def evaluate(self, data: pd.DataFrame, metric = root_mean_squared_error) -> float:
+        """
+        Evaluate model performance on given data using specified metric.
+        """
+        # ---- Normalize input ----
+        X = data[self.input_features]
+        y = data[self.target_feature]
+        w = data[self.weight_feature] if self.weight_feature is not None else None
+
+        # ---- Evaluate ----
+        self._assert_initialized()
+        y_pred = self.predict(X)
+        return metric(y, y_pred, sample_weight=w)

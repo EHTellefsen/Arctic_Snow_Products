@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
     logger.info("saving full dataset...")
     full_dataset = gridded_point_data
-    full_dataset.to_parquet(config['full_dataset']['directory'] / config['full_dataset']['name'])
+    full_dataset.to_parquet(Path(config['datasets']['full']['save_directory']) / Path(config['datasets']['full']['name']))
 
     # %% dataset splits
     logger.info("Splitting dataset...")
@@ -189,8 +189,8 @@ if __name__ == "__main__":
     )
     
     logger.info("Saving datasets...")
-    train_set.to_parquet(Path(config['train_set']['directory']) / config['train_set']['name'])
+    train_set.to_parquet(Path(config['datasets']['train']['save_directory']) / Path(config['datasets']['train']['name']))
     if val_set is not None:
-        val_set.to_parquet(Path(config['val_set']['directory']) / config['val_set']['name'])
+        val_set.to_parquet(Path(config['datasets']['validation']['save_directory']) / Path(config['datasets']['validation']['name']))
     if test_set is not None:
-        test_set.to_parquet(Path(config['test_set']['directory']) / config['test_set']['name'])
+        test_set.to_parquet(Path(config['datasets']['test']['save_directory']) / Path(config['datasets']['test']['name']))

@@ -13,16 +13,16 @@ e:
 fal:
   filename: forecast_albedo_0_daily-mean.nc
   long_name: forecast_albedo
-ictl1:
+istl1:
   filename: ice_temperature_layer_1_0_daily-mean.nc
   long_name: ice_temperature_layer_1
-ictl2:
+istl2:
   filename: ice_temperature_layer_2_0_daily-mean.nc
   long_name: ice_temperature_layer_2
-ictl3:
+istl3:
   filename: ice_temperature_layer_3_0_daily-mean.nc
   long_name: ice_temperature_layer_3
-ictl4:
+istl4:
   filename: ice_temperature_layer_4_0_daily-mean.nc
   long_name: ice_temperature_layer_4
 sf:
@@ -32,7 +32,7 @@ siconc:
   filename: sea_ice_cover_0_daily-mean.nc
   long_name: sea_ice_cover
 skt:
-  filename: skin_temperature_0_daily-mean.nc
+  filename: skin_temperature_stream-oper_daily-mean.nc
   long_name: skin_temperature
 ssrd:
   filename: surface_solar_radiation_downwards_0_daily-mean.nc
