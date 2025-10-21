@@ -8,8 +8,8 @@ class RandomForestRegression(PixelPredictionModel):
     def __init__(self, 
                  input_features: list, 
                  target_feature: str, 
+                 model_params: dict , 
                  weight_feature: str = None,
-                 model_params: dict = None, 
                  oob_score: bool = False, 
                  random_state: int = None):
 
@@ -23,9 +23,7 @@ class RandomForestRegression(PixelPredictionModel):
         self.random_state = random_state
     
 
-    def fit(self, data: pd.DataFrame, model_params: dict = None):
-        if model_params is not None:
-            self.model_params = model_params
+    def fit(self, data: pd.DataFrame):
 
         X = data[self.input_features]
         y = data[self.target_feature]

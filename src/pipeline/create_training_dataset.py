@@ -49,7 +49,7 @@ def sample_from_CETB(point_source, gridded_source):
         time=points["time"],
         x=points["x"],
         y=points["y"],
-        method = 'linear'
+        method='linear'
     )
 
     sampled_df = point_source.data.copy()
@@ -72,6 +72,7 @@ def sample_from_ERA5(point_source, gridded_source):
         longitude=points["longitude"],
         method="linear"
     )
+
 
     sampled_df = point_source.data.copy()
     for var in match.data_vars:

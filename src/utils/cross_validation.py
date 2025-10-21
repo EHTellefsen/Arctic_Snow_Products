@@ -1,7 +1,8 @@
-import pickle
-import pandas as pd
-import xarray as xr
+import yaml
 import multiprocessing as mp
+import pickle
+
+import pandas as pd
 from tqdm import tqdm
 
 from sklearn.model_selection import ParameterGrid
@@ -18,7 +19,7 @@ class CrossValidation:
         self.best_mse = None
         self.best_params = None
 
-
+    # %% Functions for cross-validation
     def _evaluate_param_fold(self, args):
         """Helper function to evaluate a single parameter set on a single fold."""
         (params, fold), splits, train_data, val_data = args
@@ -68,18 +69,17 @@ class CrossValidation:
             for param_dict, cv_fold, mse in results
         ])
         
-        self.performance_cube = df.set_index(['cv_fold'] + list(self.params.keys()))
+        self.performance_cube = df.set_index(['cv_fold'] + list(self.param_grid.keys()))
         self.performance_cube = self.performance_cube.to_xarray()
 
         return self
     
-
+    # %% save/load
     def save_cv_results(self, filepath):
         """Save cross-validation results to a file."""
         with open(filepath, 'wb') as f:
             pickle.dump(self, f)
     
-
     @classmethod
     def load_cv_results(cls, filepath):
         """Load cross-validation results from a file."""
@@ -100,13 +100,19 @@ class CrossValidation:
         self.best_params, self.best_mse = reverse_xarray_selection_to_params(best_idx)
         return self.best_params, self.best_mse
 
-
-    def get_performance_cube(self):
-        """Get the performance cube as an xarray Dataset."""
+    def save_performance_cube(self, filepath):
+        """Save the performance cube to a NetCDF file."""
         if self.performance_cube is None:
             raise ValueError("No performance data available. Please run perform_grid_search first.")
-        return self.performance_cube
-    
+        self.performance_cube.to_netcdf(filepath)
+
+    def save_best_params(self, filepath):
+        """Save the best parameters to a YAML file."""
+        if self.best_params is None:
+            raise ValueError("Best parameters not found. Please run get_best_params first.")
+        
+        with open(filepath, 'w') as f:
+            yaml.dump(self.best_params, f)
 
     def make_model_with_best_params(self):
         """Instantiate a model with the best parameters found."""
@@ -115,7 +121,7 @@ class CrossValidation:
         
         return self.model(model_params=self.best_params, **self.model_configs)
 
-
+# %% Helper function
 def reverse_xarray_selection_to_params(x):
     """
     Given e.g. x = ds.mse.sel(...)
