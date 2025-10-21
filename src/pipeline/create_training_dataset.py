@@ -67,7 +67,7 @@ def sample_from_ERA5(point_source, gridded_source):
     })
 
     match = gridded_source.data.interp(
-        valid_time=points["time"],
+        time=points["time"],
         latitude=points["latitude"],
         longitude=points["longitude"],
         method="linear"
@@ -155,7 +155,6 @@ if __name__ == "__main__":
     gridded_point_data = grid_and_merge_point_data_sources(point_sources, target_grid)
 
     # %% match to gridded data sources
-
     # CETB
     logger.info("Matching to CETB data...")
     CETB_mapping = DataMapping(config['CETB']['directory'], dataset='CETB')

@@ -18,7 +18,7 @@ class ERA5Scene(GriddedDataSource):
 
     @classmethod
     def from_files(cls, file_paths, grid_id='ERA5_polar'):
-        instance = cls(file_paths)
+        instance = cls(file_paths, grid_id=grid_id)
         instance.load()
         return instance
     

@@ -33,9 +33,9 @@ point_data_sources:
       2020-2021: 
         id: 2020-2021
         filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
-      2021-2022: 
-        id: 2021-2022
-        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
+  #     2021-2022: 
+  #       id: 2021-2022
+  #       filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
   # OIB:
   #   secondary_id:
   #     IDCSI4: 
@@ -69,8 +69,8 @@ CETB:
 ERA5:
   directory: ./data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
   channels:
-    - 10u
-    # - 10v
+    - u10
+    # - v10
     # - d2m
     # - t2m
     # - tp

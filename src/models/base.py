@@ -43,6 +43,7 @@ class PixelPredictionModel(ABC):
             raise ValueError(f"Loaded object is not of type {cls.__name__}")
         return model
 
+
     # %% Training and Prediction
     @abstractmethod
     def train(self, X, y, weights=None):

@@ -1,7 +1,7 @@
-10u:
+u10:
   filename: 10m_u_component_of_wind_stream-oper_daily-mean.nc
   long_name: 10m_u_component_of_wind
-10v:
+v10:
   filename: 10m_v_component_of_wind_0_daily-mean.nc
   long_name: 10m_v_component_of_wind
 d2m:
