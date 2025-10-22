@@ -22,26 +22,27 @@ class CrossValidation:
     # %% Functions for cross-validation
     def _evaluate_param_fold(self, args):
         """Helper function to evaluate a single parameter set on a single fold."""
-        (params, fold), splits, train_data, val_data = args
+        (params, fold), splits, data = args
         
-        train_idx, _ = splits[fold]
-        train = train_data.iloc[train_idx]
+        train_idx, val_idx = splits[fold]
+        train = data.iloc[train_idx]
+        val = data.iloc[val_idx]
 
         # Train model
         model_instance = self.model(model_params=params, **self.model_configs)
         model_instance.fit(train)
 
         # Evaluate on validation set
-        y_pred = model_instance.predict(val_data)
+        y_pred = model_instance.predict(val)
         mse = mean_squared_error(
-            val_data[self.model_configs['target_feature']], 
+            val[self.model_configs['target_feature']], 
             y_pred, 
-            sample_weight=val_data[self.model_configs['weight_feature']])
+            sample_weight=val[self.model_configs['weight_feature']])
         
         return (params, fold, mse)
 
     
-    def perform_grid_search(self, train_data, val_data, nproc=1, random_state=None):
+    def perform_grid_search(self, data, nproc=1, random_state=None):
         """Perform grid search with cross-validation."""
 
         grid = list(ParameterGrid(self.param_grid))
@@ -51,16 +52,16 @@ class CrossValidation:
                 tests.append((g, fold))
 
         kf = KFold(n_splits=self.cv_folds, shuffle=True, random_state=random_state)
-        splits = list(kf.split(train_data))
+        splits = list(kf.split(data))
 
         if nproc > 1:
             with mp.Pool(processes=nproc) as pool:
                 results = list(tqdm(pool.imap(self._evaluate_param_fold, 
-                                               [(test, splits, train_data, val_data) for test in tests]),
+                                               [(test, splits, data) for test in tests]),
                                     total=len(tests)))
         else:
             results = list(tqdm(map(self._evaluate_param_fold, 
-                                     [(test, splits, train_data, val_data) for test in tests]),
+                                     [(test, splits, data) for test in tests]),
                                 total=len(tests)))
         
         df = pd.DataFrame([
@@ -148,5 +149,6 @@ def reverse_xarray_selection_to_params(x):
                     params[dim] = float(v)
                 except (ValueError, TypeError):
                     params[dim] = v  # leave as string
-
-    return params, float(x.values.squeeze())
+    
+    x_out = x.values.squeeze()  # 0-D DataArray to scalar
+    return params, float(x_out)
