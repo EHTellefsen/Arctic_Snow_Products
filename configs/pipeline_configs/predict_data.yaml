@@ -1,0 +1,42 @@
+grid: EASE2_N3.125km
+
+output_extent: [-4500000, -4500000, 4500000, 4500000]
+
+ERA5:
+  directory: ./data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
+  channels:
+    - t2m
+    - tclw
+    - tcwv
+    - tciw
+    - siconc
+
+CETB:
+  directory: ./data/raw/CETB_AMSR2
+  channels:
+    - 6.9H
+    - 6.9V
+    - 10.7H
+    - 10.7V
+    - 18H
+    - 18V
+    - 23H
+    - 23V
+    - 36H
+    - 36V
+    - 89H
+    - 89V
+
+model_checkpoint: ./data/processed/models/ASP_RFR_model.pkl
+
+output:
+  directory: ./data/processed/predictions
+  name: ASP_snow_depth_predictions_{date}.nc
+
+dates:
+  start: 2020-11-01
+  end: 2020-11-05
+
+mask:
+  channel: siconc
+  threshold: 0.75

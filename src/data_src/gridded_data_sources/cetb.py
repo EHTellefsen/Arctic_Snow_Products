@@ -62,32 +62,6 @@ class CETBScene(GriddedDataSource):
 
 
 ##############################################################################################
-# %% Loading utilities
-def map_CETB_files(directory, channels=None):
-    """
-    Creates a dictionary mapping each date (from filenames like CETB_YYYYMMDD.nc)
-    to a list of all matching file paths within the directory and its subdirectories.
-    """
-    date_file_map = defaultdict(list)
-
-    for root, _, files in os.walk(directory):
-        for file in files:
-            if file.endswith('.nc'):
-                if channels is not None:
-                    if Path(file).stem.split('_')[7] not in channels:
-                        continue
-                try:
-                    # extract date assuming format CETB_YYYYMMDD.nc
-                    date_str = file.split('_')[8]
-                    date = datetime.strptime(date_str, '%Y%m%d').date()
-                    full_path = os.path.join(root, file)
-                    date_file_map[date].append(full_path)
-                except (IndexError, ValueError):
-                    continue
-
-    return dict(date_file_map)
-
-
 def load_CETB_data(files, grid):
     cetb_scenes = []
     for file in files:

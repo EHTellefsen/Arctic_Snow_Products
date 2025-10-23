@@ -35,12 +35,12 @@ class GriddedDataSource:
         return model
 
         # %% Save and Load
-    def save(self, path: str):
-        self._assert_initialized()
-        
+    def save(self, path: str): 
         with open(path, 'wb') as f:
             pickle.dump(self, f)
     
+    def to_netcdf(self, path: str):
+        self.data.to_netcdf(path)
 
     # %% Grid transformation methods
     def regrid(self, target_grid: Grid, method: str = 'linear'):

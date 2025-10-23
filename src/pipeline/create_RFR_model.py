@@ -22,10 +22,10 @@ if __name__ == "__main__":
     if isinstance(train_data_path, str):
         train_data_path = [train_data_path]
 
-    train_data = pd.concat([pd.read_csv(f) for f in train_data_path], ignore_index=True)
+    train_data = pd.concat([pd.read_parquet(f) for f in train_data_path], ignore_index=True)
     train_data = train_data[train_data['primary_id'].isin(config['input_data']['primary_ids']) & train_data['secondary_id'].isin(config['input_data']['secondary_ids'])]
 
     # Initialize and create model
     model = RandomForestRegression(model_params=model_params, **model_configs)
-    model.train(train_data)
-    model.save_model(config['output']['model_path'])
+    model.fit(train_data)
+    model.save(config['output']['model_path'])
