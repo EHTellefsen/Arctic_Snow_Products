@@ -7,7 +7,7 @@ from src.models.random_forest_regression import RandomForestRegression
 
 if __name__ == "__main__":
     # Load configuration
-    with open("configs/pipeline_configs/cross_validation_config.yaml", 'r') as f:
+    with open("configs/pipeline_configs/perform_RFR_cross_validation.yaml", 'r') as f:
         config = yaml.safe_load(f)
 
     cv_folds = config['cv_folds']
