@@ -8,7 +8,6 @@ ERA5:
     - t2m
     - tclw
     - tcwv
-    - tciw
     - siconc
 
 CETB:
@@ -27,15 +26,18 @@ CETB:
     - 89H
     - 89V
 
-model_checkpoint: ./data/processed/models/ASP_RFR_model.pkl
+model_checkpoint: ./data/processed/models/ASP_RFR_model_final.pkl
 
 output:
   directory: ./data/processed/predictions
   name: ASP_snow_depth_predictions_{date}.nc
+  chunk_size:
+    y: 720
+    x: 720
 
 dates:
-  start: 2020-11-01
-  end: 2020-11-05
+  start: 2021-04-01
+  end: 2021-04-05
 
 mask:
   channel: siconc

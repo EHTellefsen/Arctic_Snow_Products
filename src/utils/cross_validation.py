@@ -10,16 +10,61 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 
 class CrossValidation:
-    def __init__(self, model, model_configs, param_grid, cv_folds):
+    """Class to perform cross-validation with grid search for hyperparameter tuning."""
+    def __init__(self, model, model_configs, param_grid):
         self.model = model
         self.model_configs = model_configs
         self.param_grid = param_grid
-        self.cv_folds = cv_folds
         self.performance_cube = None
         self.best_mse = None
         self.best_params = None
 
     # %% Functions for cross-validation
+    def _prepare_grid(self, n_splits):
+        """Prepare list of parameter and fold combinations for evaluation."""
+        grid = list(ParameterGrid(self.param_grid))
+        tests = []
+        for g in grid:
+            for fold in range(n_splits):
+                tests.append((g, fold))
+        return tests
+
+    def _make_random_splits(self, data, n_splits, random_state):
+        """Create random K-Fold splits."""
+        kf = KFold(n_splits=n_splits, shuffle=True, random_state=random_state)
+        splits = list(kf.split(data))
+        return splits
+    
+    def _make_temporal_splits(self, data, time_column, n_splits):
+        """Create temporal splits based on time column."""
+        data_sorted = data.sort_values(by=time_column)
+        n_samples = len(data_sorted)
+        fold_size = n_samples // n_splits
+        splits = []
+        for fold in range(n_splits):
+            val_start = fold * fold_size
+            if fold == n_splits - 1:
+                val_end = n_samples
+            else:
+                val_end = (fold + 1) * fold_size
+            val_indices = data_sorted.index[val_start:val_end].tolist()
+            train_indices = data_sorted.index.difference(val_indices).tolist()
+            splits.append((train_indices, val_indices))
+        return splits
+
+    def _run_grid_search(self, data, tests, splits, nproc):
+        """Run grid search with cross-validation."""
+        if nproc > 1:
+            with mp.Pool(processes=nproc) as pool:
+                results = list(tqdm(pool.imap(self._evaluate_param_fold, 
+                                               [(test, splits, data) for test in tests]),
+                                    total=len(tests)))
+        else:
+            results = list(tqdm(map(self._evaluate_param_fold, 
+                                     [(test, splits, data) for test in tests]),
+                                total=len(tests)))
+        return results
+
     def _evaluate_param_fold(self, args):
         """Helper function to evaluate a single parameter set on a single fold."""
         (params, fold), splits, data = args
@@ -41,29 +86,8 @@ class CrossValidation:
         
         return (params, fold, mse)
 
-    
-    def perform_grid_search(self, data, nproc=1, random_state=None):
-        """Perform grid search with cross-validation."""
-
-        grid = list(ParameterGrid(self.param_grid))
-        tests = []
-        for g in grid:
-            for fold in range(self.cv_folds):
-                tests.append((g, fold))
-
-        kf = KFold(n_splits=self.cv_folds, shuffle=True, random_state=random_state)
-        splits = list(kf.split(data))
-
-        if nproc > 1:
-            with mp.Pool(processes=nproc) as pool:
-                results = list(tqdm(pool.imap(self._evaluate_param_fold, 
-                                               [(test, splits, data) for test in tests]),
-                                    total=len(tests)))
-        else:
-            results = list(tqdm(map(self._evaluate_param_fold, 
-                                     [(test, splits, data) for test in tests]),
-                                total=len(tests)))
-        
+    def _prepare_performance_cube(self, results):
+        """Prepare performance cube from results."""
         df = pd.DataFrame([
             {k: str(v) for k, v in param_dict.items()}  # ← force every param to string
             | dict(cv_fold=cv_fold, mse=mse)           # merge cv + mse
@@ -72,9 +96,26 @@ class CrossValidation:
         
         self.performance_cube = df.set_index(['cv_fold'] + list(self.param_grid.keys()))
         self.performance_cube = self.performance_cube.to_xarray()
+        return self.performance_cube
 
-        return self
+    def _grid_search(self, data, splits, n_splits, nproc):
+        """Perform grid search with cross-validation."""
+        tests = self._prepare_grid(n_splits)
+        results = self._run_grid_search(data, tests, splits, nproc)
+        self._prepare_performance_cube(results)
+        return self        
+
+    # %% run methods
+    def random_split_grid_search(self, data, n_splits=5, nproc=1, random_state=None):
+        """Perform grid search with random split cross-validation."""
+        splits = self._make_random_splits(data, n_splits, random_state)
+        return self._grid_search(data, splits, n_splits, nproc)
     
+    def temporal_split_grid_search(self, data, time_column, n_splits=5, nproc=1):
+        """Perform grid search with temporal cross-validation."""
+        splits = self._make_temporal_splits(data, time_column, n_splits)
+        return self._grid_search(data, splits, n_splits, nproc)
+
     # %% save/load
     def save_cv_results(self, filepath):
         """Save cross-validation results to a file."""
@@ -89,7 +130,6 @@ class CrossValidation:
         if not isinstance(cv_instance, cls):
             raise ValueError(f"Loaded object is not of type {cls.__name__}")
         return cv_instance
-
 
     def get_best_params(self):
         """Get the best parameters based on cross-validation results."""

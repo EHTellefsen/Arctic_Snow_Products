@@ -110,6 +110,9 @@ class PixelPredictionModel(ABC):
         containing boolean values where True indicates valid data points for prediction.
         """
 
+        if 'doy' in self.input_features and 'doy' not in X.data_vars:
+            X['doy'] = X['time'].dt.dayofyear
+
         missing_features = set(self.input_features) - set(X.data_vars)
         if missing_features:
             raise ValueError(f"Input data is missing required features: {missing_features}")

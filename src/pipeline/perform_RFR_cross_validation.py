@@ -21,7 +21,6 @@ if __name__ == "__main__":
         model=RandomForestRegression,
         model_configs=model_configs,    
         param_grid=param_grid,
-        cv_folds=cv_folds
     )
 
     # Load training and validation data
@@ -29,7 +28,7 @@ if __name__ == "__main__":
     train_data = train_data[train_data['primary_id'].isin(config['input_data']['primary_ids']) & train_data['secondary_id'].isin(config['input_data']['secondary_ids'])]
 
     # Perform grid search with cross-validation
-    cross_validator = cross_validator.perform_grid_search(train_data, nproc=config['n_jobs'], random_state=config['random_state'])
+    cross_validator = cross_validator.temporal_split_grid_search(train_data, 'time', n_splits=cv_folds, nproc=config['n_jobs'])
 
     # Access results
     cross_validator.save_cv_results(config['output']['cv_results_path'])

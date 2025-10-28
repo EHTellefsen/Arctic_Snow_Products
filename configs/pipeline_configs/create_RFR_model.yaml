@@ -1,19 +1,21 @@
 
 input_data:
-  train_data_paths: data/intermediate/datasets/ASP_train.parquet
+  train_data_paths: data/intermediate/datasets/EASE2_N3.125km_v1.1/ASP_train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
 output:
-  model_path: data/processed/models/ASP_RFR_model.pkl
+  model_path: data/processed/models/ASP_RFR_model_final.pkl
 
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 't2m','tcwv', 'tclw', 'tciw']
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 't2m','tcwv', 'tclw', 'doy']
     target_feature: SD_mean
     weight_feature: num_samples
     oob_score: True
     random_state: 42
-  param_file: data/intermediate/CV_results/best_params.yaml
-  fixed_params: 
-    n_estimators: 300
+  param_file: data/intermediate/CV_results/best_params_final.yaml
+  fixed_params: {}
+
+    
+

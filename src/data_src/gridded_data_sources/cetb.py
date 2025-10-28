@@ -1,9 +1,6 @@
 from pathlib import Path
-import os
-from collections import defaultdict
 
 import xarray as xr
-from datetime import datetime
 
 from .base import GriddedDataSource
 

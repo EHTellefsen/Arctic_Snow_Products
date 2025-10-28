@@ -1,32 +1,30 @@
 
-cv_folds: 5
+cv_folds: 10
 
 n_jobs: 4
 
 random_state: 42
 
 input_data:
-  train_data_path: data/intermediate/datasets/ASP_train.parquet
+  train_data_path: data/intermediate/datasets/EASE2_N3.125km_v1.1/ASP_train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
 output:
-  cv_results_path: data/intermediate/CV_results/cv_results_2.pkl
-  performance_cube_path: data/intermediate/CV_results/performance_cube_2.nc
-  best_params_path: data/intermediate/CV_results/best_params_2.yaml
+  cv_results_path: data/intermediate/CV_results/cv_results_281025_2.pkl
+  performance_cube_path: data/intermediate/CV_results/performance_cube_281025_2.nc
+  best_params_path: data/intermediate/CV_results/best_params_281025_2.yaml
 
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 't2m','tcwv', 'tclw', 'tciw']
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 't2m','tcwv', 'tclw', 'doy']
     target_feature: SD_mean
     weight_feature: num_samples
     oob_score: False
     random_state: 42
   param_grid:
     n_estimators: [30] 
-    max_depth: [None,  30, 35, 40]
-    min_samples_split: [2, 3, 4, 5]
-    min_samples_leaf: [1, 2]
-    max_features: [0.6, 0.7, 0.8, 0.9, 1.0]
-    max_samples: [0.9, 0.95, 1.0]
-    min_weight_fraction_leaf: [0.0]
+    max_depth: [5, 7, 9, 10, 11, 13, 15, None]
+    min_samples_split: [400]
+    min_samples_leaf: [10, 50, 100, 200, 400]
+    max_features: [0.25, 0.5, 0.75, 1.0]

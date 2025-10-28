@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 # %% Point data sources
 def load_point_data_source(filepath, secondary_id):
+    """Load point data source based on secondary_id."""
     if secondary_id in ['2020-2021', '2021-2022']:
         return pds.C2I(filepath, secondary_id=secondary_id)
     elif secondary_id == 'IDCSI4':
@@ -29,6 +30,7 @@ def load_point_data_source(filepath, secondary_id):
 
 
 def grid_and_merge_point_data_sources(sources, target_grid_id):
+    """Resample point data sources to target grid and merge them."""
     gridded_sources = []
     for source in sources:
         gridded_sources.append(source.resample_bucket(target_grid_id))
@@ -39,6 +41,7 @@ def grid_and_merge_point_data_sources(sources, target_grid_id):
 
 # %% Sample from gridded sources
 def sample_from_CETB(point_source, gridded_source):
+    """Sample gridded CETB data at point source locations."""
     points = xr.Dataset({
         "time": (("points",), point_source.data['time'].astype('<M8[ns]').values),
         "x":   (("points",), point_source.data['x'].values),
@@ -60,6 +63,7 @@ def sample_from_CETB(point_source, gridded_source):
 
 
 def sample_from_ERA5(point_source, gridded_source):
+    """Sample gridded ERA5 data at point source locations."""
     points = xr.Dataset({
         "time": (("points",), point_source.data['time'].astype('<M8[ns]').values),
         "latitude":   (("points",), point_source.data['lat'].values),
@@ -73,7 +77,6 @@ def sample_from_ERA5(point_source, gridded_source):
         method="linear"
     )
 
-
     sampled_df = point_source.data.copy()
     for var in match.data_vars:
         sampled_df[var] = match[var].values
@@ -82,32 +85,16 @@ def sample_from_ERA5(point_source, gridded_source):
 
 
 # %% splits
-def split_dataset(dataset, val_frac, val_equalization, test_period):
-    
-    # Split dataset into train_val and test sets - test set is held out based on time period
-    if test_period is not None:
-        test_set, train_val_set = split_by_period(dataset, test_period['start'], test_period['end'])
-    else:
-        test_set = None
-        train_val_set = dataset
-    
-    # Split train_val_set into train and validation sets - validation set is randomly sampled based on val_frac and equalization
-    if val_frac > 0:
-        train_set, val_set = split_by_fraction(train_val_set, val_frac, equalization_id=val_equalization['equalization_id'])
-    else:
-        train_set = train_val_set
-        val_set = None
-
-    return train_set, val_set, test_set
-
-
 def split_by_period(dataset, start_date, end_date):
+    """Split dataset by time period."""
     mask = (dataset.data['time'] >= start_date) & (dataset.data['time'] < end_date)
     subset = pds.GriddedPointDataSource(dataset.data[mask], dataset.grid)
     remaining = pds.GriddedPointDataSource(dataset.data[~mask], dataset.grid)
     return subset, remaining
 
+
 def split_by_fraction(dataset, fraction, equalization_id):
+    """Split dataset by fraction, optionally equalizing by secondary ID."""
     if equalization_id is not None:
         # Get unique secondary IDs
         ids = dataset.data[equalization_id].unique()
@@ -119,22 +106,20 @@ def split_by_fraction(dataset, fraction, equalization_id):
             id_val_sample = id_data.sample(n=id_val_size, random_state=42)
             val_indices.extend(id_val_sample.index.tolist())
             
-        val_set = pds.GriddedPointDataSource(dataset.data.loc[val_indices], dataset.grid)
-        train_set = pds.GriddedPointDataSource(dataset.data.drop(index=val_indices), dataset.grid)
+        subset = pds.GriddedPointDataSource(dataset.data.loc[val_indices], dataset.grid)
+        remaining = pds.GriddedPointDataSource(dataset.data.drop(index=val_indices), dataset.grid)
     else:
-        val_size = int(len(dataset.data) * fraction)
-        val_data = dataset.data.sample(n=val_size, random_state=42)
-        val_set = pds.GriddedPointDataSource(val_data, dataset.grid)
-        train_set = pds.GriddedPointDataSource(dataset.data.drop(index=val_data.index), dataset.grid)
+        subset_size = int(len(dataset.data) * fraction)
+        subset_data = dataset.data.sample(n=subset_size, random_state=42)
+        subset = pds.GriddedPointDataSource(subset_data, dataset.grid)
+        remaining = pds.GriddedPointDataSource(dataset.data.drop(index=subset_data.index), dataset.grid)
 
-    return train_set, val_set
+    return subset, remaining
 
 # %% run
 if __name__ == "__main__":
     logger.info("Starting dataset creation...")
-
-    project_root = Path(__file__).resolve().parents[2]
-    config_path = project_root / "configs/pipeline_configs/create_training_dataset.yaml"
+    config_path = "configs/pipeline_configs/create_training_dataset.yaml"
     config = yaml.safe_load(open(config_path, "r"))
 
     target_grid = Grid.from_predefined(config['grid'])
@@ -182,16 +167,22 @@ if __name__ == "__main__":
 
     # %% dataset splits
     logger.info("Splitting dataset...")
-    train_set, val_set, test_set = split_dataset(
-        full_dataset,
-        val_frac=config['split_params']['val_fraction'],
-        val_equalization=config['split_params']['val_equalization'],
-        test_period=config['split_params']['test_period']
-    )
-    
-    logger.info("Saving datasets...")
-    train_set.to_parquet(Path(config['datasets']['train']['save_directory']) / Path(config['datasets']['train']['name']))
-    if val_set is not None:
-        val_set.to_parquet(Path(config['datasets']['validation']['save_directory']) / Path(config['datasets']['validation']['name']))
-    if test_set is not None:
-        test_set.to_parquet(Path(config['datasets']['test']['save_directory']) / Path(config['datasets']['test']['name']))
+
+    remaining = full_dataset
+    # Iterate over datasets to create splits
+    for dataset in config['datasets'].keys():
+        if dataset not in ['full', 'train']:
+            # split according to config
+            ds = config['datasets'][dataset]
+            if 'split_type' in ds and ds['split_type'] == 'periodic':
+                subset, remaining = split_by_period(remaining, ds['period']['start'], ds['period']['end'])
+            elif 'split_type' in ds and ds['split_type'] == 'fractional':
+                subset, remaining = split_by_fraction(remaining, ds['split_params']['fraction'], equalization_id=ds['split_params']['equalization_id'])
+            else:
+                raise ValueError(f"Unsupported split type for dataset {dataset}")
+
+            # save subset
+            subset.to_parquet(Path(ds['save_directory']) / Path(ds['name']))
+
+    # Save remaining as training dataset
+    remaining.to_parquet(Path(config['datasets']['train']['save_directory']) / Path(config['datasets']['train']['name']))

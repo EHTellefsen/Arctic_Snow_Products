@@ -1,30 +1,38 @@
 grid: EASE2_N3.125km
 
 datasets:
-  full:
+  full: # mandatory
     name: "ASP_full.parquet"
-    save_directory: ./data/intermediate/datasets
+    save_directory: ./data/intermediate/datasets/EASE2_N3.125km_v1.1
 
-  train:
+  train: # mandatory
     name: "ASP_train.parquet"
-    save_directory: ./data/intermediate/datasets
+    save_directory: ./data/intermediate/datasets/EASE2_N3.125km_v1.1
 
-  validation:
-    name: "ASP_val.parquet"
-    save_directory: ./data/intermediate/datasets
+  test_2020: # optional
+    name: "ASP_test_2020-11-01_2020-12-01.parquet"
+    save_directory: ./data/intermediate/datasets/EASE2_N3.125km_v1.1
+    split_type: 'periodic'
+    period:
+      start: '2020-11-01'
+      end: '2020-12-01'
 
-  test:
-    name: "ASP_test.parquet"
-    save_directory: ./data/intermediate/datasets
-
-split_params:
-  val_fraction: 0.2
-  val_equalization: 
-    equalization_id: 'primary_id'
-
-  test_period:
-    start: '2022-04-01'
-    end: '2022-05-01'
+  test_2022: # optional
+    name: "ASP_test_2022-04-01_2022-05-01.parquet"
+    save_directory: ./data/intermediate/datasets/EASE2_N3.125km_v1.1
+    split_type: 'periodic'
+    period:
+      start: '2022-04-01'
+      end: '2022-05-01'
+    
+  # test_fractional: # optional
+  #   name: "ASP_test_fractional.parquet"
+  #   save_directory: ./data/intermediate/datasets
+  #   split_type: 'fractional'
+  #   split_params:
+  #     fraction: 0.2
+  #     equalization_id: 'primary_id'
+    
 
 point_data_sources:
   C2I:

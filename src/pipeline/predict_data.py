@@ -6,10 +6,13 @@ import logging
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
+from pyproj import Transformer
+import xarray as xr
 
 from src.utils.grid_utils import Grid
 from src.utils.data_utils import DataMapping
 from src.data_src.gridded_data_sources import load_ERA5_data, load_CETB_data
+from configs.netcdf_metadata import attrs
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,6 +31,7 @@ if __name__ == "__main__":
     # loading model
     with open(config['model_checkpoint'], 'rb') as model_file:
         model = pickle.load(model_file)
+    model.target_feature = 'sd'
 
     # channels to process
     cetb_channels = config['CETB']['channels']
@@ -61,11 +65,35 @@ if __name__ == "__main__":
         # merging data
         scene = cetb_scene + era5_scene
 
-        # masking land and ocean areas
-        mask = scene.data[config['mask']['channel']] > config['mask']['threshold']
+        # masking
+        mask = (scene.data[config['mask']['channel']] > config['mask']['threshold']) 
 
         # predicting
         prediction = model.predict(scene, mask=mask)
         
-        # saving output
-        prediction.to_netcdf(f"{config['output']['directory']}/{config['output']['name'].format(date=str(date.date()))}")
+        # Preparing NetCDF output
+        ds = prediction.data
+
+        trf = Transformer.from_crs("EPSG:6931", "EPSG:4326", always_xy=True)
+        lat, lon = trf.transform(ds['x'].values, ds['y'].values)
+        lat_grid, lon_grid = np.meshgrid(lat, lon)
+
+        ds = ds.assign_coords(x=ds['x'].astype('int32'))
+        ds = ds.assign_coords(y=ds['y'].astype('int32'))
+        ds = ds.assign_coords(lat=(('y','x'), lat_grid.astype('float32')))
+        ds = ds.assign_coords(lon=(('y','x'), lon_grid.astype('float32')))
+        ds['sd'] = ds.sd.astype('float32')
+        ds['crs'] = xr.DataArray(np.int32(0))
+
+        for var in ds.data_vars:
+            if var in attrs:
+                ds[var].attrs = attrs[var]
+        for coord in ds.coords:
+            if coord in attrs:
+                ds[coord].attrs = attrs[coord]
+        ds.attrs = attrs['global']
+        ds = ds.chunk({'time': 1, 'y': config['output']['chunk_size']['y'], 'x': config['output']['chunk_size']['x']})
+
+        # Saving NetCDF output
+        ds.to_netcdf(f"{config['output']['directory']}/{config['output']['name'].format(date=str(date.date()))}", 
+                     format='NETCDF4_CLASSIC')
