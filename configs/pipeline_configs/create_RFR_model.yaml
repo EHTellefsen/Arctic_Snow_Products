@@ -1,11 +1,11 @@
 
 input_data:
-  train_data_paths: data/intermediate/datasets/EASE2_N3.125km_v1.1/ASP_train.parquet
+  train_data_paths: data/intermediate/datasets/EASE2_LARM-smoothed_N3.125km_v1.1/ASP_train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
 output:
-  model_path: data/processed/models/ASP_RFR_model_final.pkl
+  model_path: data/processed/models/final/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
 
 model:
   configs:

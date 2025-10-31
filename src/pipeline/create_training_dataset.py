@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 # %% Point data sources
-def load_point_data_source(filepath, secondary_id):
+def load_point_data_source(filepath, secondary_id, retracker = 'LARM-smoothed'):
     """Load point data source based on secondary_id."""
     if secondary_id in ['2020-2021', '2021-2022']:
-        return pds.C2I(filepath, secondary_id=secondary_id)
+        return pds.C2I(filepath, secondary_id=secondary_id, retracker=retracker)
     elif secondary_id == 'IDCSI4':
         return pds.OIB(filepath)
     elif secondary_id == 'ICEBIRD':
@@ -132,7 +132,8 @@ if __name__ == "__main__":
         for sid_cfg in config['point_data_sources'][source_cfg]['secondary_id']:
             source = load_point_data_source(
                 filepath=config['point_data_sources'][source_cfg]['secondary_id'][sid_cfg]['filepath'],
-                secondary_id=config['point_data_sources'][source_cfg]['secondary_id'][sid_cfg]['id']
+                secondary_id=config['point_data_sources'][source_cfg]['secondary_id'][sid_cfg]['id'],
+                retracker=config['point_data_sources'][source_cfg]['retracker']
             )
             point_sources.append(source)
     

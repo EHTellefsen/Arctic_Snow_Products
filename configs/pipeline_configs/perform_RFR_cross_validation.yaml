@@ -11,9 +11,9 @@ input_data:
   secondary_ids: ['2020-2021', '2021-2022']
 
 output:
-  cv_results_path: data/intermediate/CV_results/cv_results_281025_2.pkl
-  performance_cube_path: data/intermediate/CV_results/performance_cube_281025_2.nc
-  best_params_path: data/intermediate/CV_results/best_params_281025_2.yaml
+  cv_results_path: data/intermediate/CV_results/cv_results_final.pkl
+  performance_cube_path: data/intermediate/CV_results/performance_cube_final.nc
+  best_params_path: data/intermediate/CV_results/best_params_final.yaml
 
 model:
   configs:
