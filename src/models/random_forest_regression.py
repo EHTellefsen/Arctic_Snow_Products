@@ -16,11 +16,12 @@ class RandomForestRegression(PixelPredictionModel):
         super().__init__(input_features=input_features, 
                          target_feature=target_feature, 
                          weight_feature=weight_feature, 
-                         model_params=model_params, 
                          )
         
         self.oob_score = oob_score
         self.random_state = random_state
+        self.model_params = model_params
+        self.model = None
     
 
     def fit(self, data: pd.DataFrame):
@@ -36,4 +37,9 @@ class RandomForestRegression(PixelPredictionModel):
             )
         
         self.model.fit(X, y, sample_weight=w)
+        self.is_fitted = True
         return self
+    
+
+    def _predict(self, X):
+        return self.model.predict(X)

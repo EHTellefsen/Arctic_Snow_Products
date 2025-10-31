@@ -13,14 +13,11 @@ class PixelPredictionModel(ABC):
                  input_features=None, 
                  target_feature=None, 
                  weight_feature=None, 
-                 model_params=None
                  ):
         self.input_features = input_features
         self.target_feature = target_feature
         self.weight_feature = weight_feature
-        self.model_params = model_params
-
-        self.model = None
+        self.is_fitted = False
 
 
     # %% Representation
@@ -32,7 +29,7 @@ class PixelPredictionModel(ABC):
     # %% initialization checks
     def _assert_initialized(self):
         """ Check if the model has been properly initialized and trained. """
-        if self.model is None:
+        if not self.is_fitted:
             raise ValueError("Model has not been trained yet.")
         if self.input_features is None:
                 raise ValueError("Model features are not defined.")
@@ -59,8 +56,12 @@ class PixelPredictionModel(ABC):
 
     # %% Training and Prediction
     @abstractmethod
-    def fit(self, data: pd.DataFrame, model_params: dict = None):
+    def fit(self, data: pd.DataFrame):
         pass
+
+    @abstractmethod
+    def _predict(self, X):
+        pass        
 
     def predict(self, data: pd.DataFrame | xr.Dataset | GriddedDataSource, mask = None) -> pd.Series | xr.DataArray | GriddedDataSource:
         """
@@ -94,7 +95,7 @@ class PixelPredictionModel(ABC):
         if mask is not None:
             X = X[mask]
 
-        y = self.model.predict(X)
+        y = self._predict(X)
 
         if mask is not None:
             full_y = pd.Series(index=mask.index, dtype=y.dtype)
@@ -135,7 +136,7 @@ class PixelPredictionModel(ABC):
         X_df = X_df.dropna()
 
         # Predict and reconstruct xarray
-        X_df[self.target_feature] = self.model.predict(X_df[self.input_features])
+        X_df[self.target_feature] = self._predict(X_df[self.input_features])
 
         # reconstruct xarray
         y_df = X_df[dims + [self.target_feature]].set_index(dims)
