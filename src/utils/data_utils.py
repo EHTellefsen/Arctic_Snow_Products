@@ -1,10 +1,21 @@
+# -- coding: utf-8 --
+# data_utils.py
+"""Module for data mapping and querying utilities."""
+
+# -- built-in libraries --
 import os
 import yaml
-import pandas as pd
 from pathlib import Path
 from datetime import datetime
 
+# -- third-party libraries  --
+import pandas as pd
+
+#  -- custom modules  --
+
+###########################################################
 class DataMapping:
+    """Class to map and query data files in a directory based on dataset type."""
     def __init__(self, directory, dataset):
         self.mapping = pd.DataFrame({'date':[], 'channel': [], 'filename': []})
         
@@ -19,6 +30,7 @@ class DataMapping:
 
     # %% Mapping utilities
     def _map_ERA5(self, directory):
+        """Map ERA5 data files in the given directory."""
         ERA5_dict = yaml.safe_load(open('configs/ERA5_variable_dictionary.yaml'))
         ERA5_dict_df = pd.DataFrame(ERA5_dict).T
         ERA5_dict_df.index.name = 'short_name'
@@ -48,6 +60,7 @@ class DataMapping:
 
 
     def _map_CETB(self, directory):
+        """Map CETB data files in the given directory."""
         for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith('.nc'):
@@ -65,6 +78,7 @@ class DataMapping:
 
     # %% Querying utilities
     def get_by_channel(self, channel):
+        """Get mapping entries by channel or list of channels."""
         if isinstance(channel, list):
             return self.mapping[self.mapping['channel'].isin(channel)]
         elif isinstance(channel, str):
@@ -73,7 +87,7 @@ class DataMapping:
             raise ValueError('channel needs to be either a string or a list of strings')
 
     def get_by_date(self, date):
-        
+        """Get mapping entries by date, list of dates, or time period (slice)."""
         # list of dates
         if isinstance(date, list):
             date = [d.date() if isinstance(d, datetime) else datetime.strptime(d, '%Y-%m-%d').date() for d in date]

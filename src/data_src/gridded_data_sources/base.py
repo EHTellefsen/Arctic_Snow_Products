@@ -1,26 +1,39 @@
+# -- coding: utf-8 --
+# base.py
+"""Base class for gridded data sources."""
+
+# -- built-in modules --
+import pickle
+
+# -- third-party modules --
 from pyproj import Transformer
 import numpy as np
 import xarray as xr
-import pickle
 from IPython.display import display
 
+# -- custom modules --
 from src.utils.grid_utils import Grid
 
+#######################################################
 class GriddedDataSource:
+    """Base class for gridded data sources."""
     def __init__(self, grid_id: str):
         self.data = None
         self.grid = Grid.from_predefined(grid_id)
     
     # %% display methods
     def __repr__(self):
+        """String representation of the data source."""
         return ""
     
     def _ipython_display_(self):
+        """Display the xarray dataset in Jupyter notebooks."""
         display(self.data)
     
     # %% loading and saving methods
     @classmethod
     def from_xarray(cls, data: xr.Dataset, grid: Grid):
+        """Create a GriddedDataSource from an xarray Dataset and a Grid."""
         out = cls.__new__(cls)
         out.grid = grid
         out.data = data
@@ -28,6 +41,7 @@ class GriddedDataSource:
     
     @classmethod
     def from_pickle(cls, path: str):
+        """Load a GriddedDataSource from a pickle file."""
         with open(path, 'rb') as f:
             model = pickle.load(f)
         if not isinstance(model, cls):
@@ -36,10 +50,12 @@ class GriddedDataSource:
 
         # %% Save and Load
     def save(self, path: str): 
+        """Save the GriddedDataSource to a pickle file."""
         with open(path, 'wb') as f:
             pickle.dump(self, f)
     
     def to_netcdf(self, path: str):
+        """Save the xarray Dataset to a NetCDF file."""
         self.data.to_netcdf(path)
 
     # %% Grid transformation methods
@@ -92,6 +108,7 @@ class GriddedDataSource:
     #%% Combination methods
     @classmethod
     def merge(cls, data_sources):
+        """Merge multiple GriddedDataSource objects into one."""
         for ds in data_sources[1:]:
             if data_sources[0].grid != ds.grid:
                 raise ValueError("All datasets must have the same grid to be merged.")
@@ -104,11 +121,13 @@ class GriddedDataSource:
 
 
     def __add__(self, other):
+        """Combine two GriddedDataSource objects by merging their datasets."""
         return self.merge([self, other])
         
 
     # %% misc
     def copy(self):
+        """Create a deep copy of the GriddedDataSource."""
         import copy
         return copy.deepcopy(self)
         

@@ -44,7 +44,7 @@ strd:
   filename: surface_thermal_radiation_downwards_0_daily-mean.nc
   long_name: surface_thermal_radiation_downwards
 t2m:
-  filename: 2m_temperature_0_daily-mean.nc
+  filename: 2m_temperature_stream-oper_daily-mean.nc
   long_name: 2m_temperature
 tciw:
   filename: total_column_cloud_ice_water_0_daily-mean.nc

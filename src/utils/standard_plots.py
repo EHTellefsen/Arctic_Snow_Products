@@ -1,3 +1,10 @@
+# -- coding: utf-8 --
+# standard_plots.py
+"""Module providing standard plotting functions for scatterplots, histograms, polar maps, and binned parameter comparisons."""
+
+# -- built-in libraries --
+
+# -- third-party libraries  --
 import matplotlib.pyplot as plt
 import numpy as np
 import cartopy.crs as ccrs
@@ -6,6 +13,8 @@ import pyproj
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
+
+#  -- custom modules  --
 
 # %% Standard scatterplots/heatmaps ###################################################################################################################
 def scatter_base(func):

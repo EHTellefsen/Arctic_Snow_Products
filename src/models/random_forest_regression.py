@@ -1,10 +1,19 @@
+# -- coding: utf-8 --
+# random_forest_regression.py
+"""Random Forest Regression model implementation for snow depth prediction."""
+
+# -- built-in modules --
+
+# -- third-party modules --
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
+# -- custom modules --
 from .base import PixelPredictionModel
 
-
+#######################################################
 class RandomForestRegression(PixelPredictionModel):
+    """Random Forest Regression model for snow depth prediction."""
     def __init__(self, 
                  input_features: list, 
                  target_feature: str, 
@@ -25,7 +34,7 @@ class RandomForestRegression(PixelPredictionModel):
     
 
     def fit(self, data: pd.DataFrame):
-
+        """Fit the Random Forest Regression model to the data."""
         X = data[self.input_features]
         y = data[self.target_feature]
         w = data[self.weight_feature] if self.weight_feature is not None else None
@@ -42,4 +51,5 @@ class RandomForestRegression(PixelPredictionModel):
     
 
     def _predict(self, X):
+        """Predict snow depth using the fitted model."""
         return self.model.predict(X)

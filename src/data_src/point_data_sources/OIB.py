@@ -1,7 +1,17 @@
-from .base import PointDataSource
-import pandas as pd
+# -- coding: utf-8 --
+# OIB.py
+"""OIB point data source implementation."""
+
+# -- built-in modules --
 from pathlib import Path
 
+# -- third-party modules --
+import pandas as pd
+
+# -- custom modules --
+from .base import PointDataSource
+
+##############################################################################################
 class OIB(PointDataSource):
     def __init__(self, files):
         self.files = files

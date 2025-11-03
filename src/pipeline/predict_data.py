@@ -1,22 +1,32 @@
+# -- coding: utf-8 --
+# predict_data.py
+"""Script to process input data, make predictions using a pre-trained model,
+and save the results in NetCDF format."""
+
+# -- built-in libraries --
 import yaml
 import pickle
 from datetime import timedelta
 import logging
 
+# -- third-party libraries  --
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from pyproj import Transformer
 import xarray as xr
 
+#  -- custom modules  --
 from src.utils.grid_utils import Grid
 from src.utils.data_utils import DataMapping
 from src.data_src.gridded_data_sources import load_ERA5_data, load_CETB_data
 from configs.netcdf_metadata import attrs
 
+# setting up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+########################################################################
 if __name__ == "__main__":
     logger.info("Start data processing...")
     with open("./configs/pipeline_configs/predict_data.yaml", 'r') as file:
@@ -74,10 +84,12 @@ if __name__ == "__main__":
         # Preparing NetCDF output
         ds = prediction.data
 
+        # Adding coordinates and attributes
         trf = Transformer.from_crs("EPSG:6931", "EPSG:4326", always_xy=True)
         lat, lon = trf.transform(ds['x'].values, ds['y'].values)
         lat_grid, lon_grid = np.meshgrid(lat, lon)
 
+        # Assigning coordinates and attributes
         ds = ds.assign_coords(x=ds['x'].astype('int32'))
         ds = ds.assign_coords(y=ds['y'].astype('int32'))
         ds = ds.assign_coords(lat=(('y','x'), lat_grid.astype('float32')))
@@ -85,6 +97,7 @@ if __name__ == "__main__":
         ds['sd'] = ds.sd.astype('float32')
         ds['crs'] = xr.DataArray(np.int32(0))
 
+        # Applying attributes
         for var in ds.data_vars:
             if var in attrs:
                 ds[var].attrs = attrs[var]
@@ -96,4 +109,6 @@ if __name__ == "__main__":
 
         # Saving NetCDF output
         ds.to_netcdf(f"{config['output']['directory']}/{config['output']['name'].format(date=str(date.date()))}", 
-                     format='NETCDF4_CLASSIC')
+                     format='NETCDF4_CLASSIC',
+                     encoding = {var: {"zlib": True, "complevel": 4}
+            for var in ["sd", "lat", "lon", "x", "y"]})

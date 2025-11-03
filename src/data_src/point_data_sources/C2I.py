@@ -1,8 +1,19 @@
-from .base import PointDataSource
-import pandas as pd
+# -- coding: utf-8 --
+# C2I.py
+"""C2I point data source implementation."""
+
+# -- built-in modules --
 from pathlib import Path
 
+# -- third-party modules --
+import pandas as pd
+
+# -- custom modules --
+from .base import PointDataSource
+
+##############################################################################################
 class C2I(PointDataSource):
+    """C2I point data source."""
     def __init__(self, files, secondary_id, retracker = 'LARM_smoothed'):
         self.files = files
         self.retracker = retracker

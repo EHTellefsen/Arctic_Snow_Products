@@ -1,19 +1,27 @@
-import xarray as xr
-from tqdm import tqdm
+# -- coding: utf-8 --
+# create_training_dataset.py
+"""Script to create training dataset by merging point data sources with gridded data sources."""
 
+# -- built-in libraries --
 import yaml
 from pathlib import Path
 import logging
 
+# -- third-party libraries  --
+import xarray as xr
+from tqdm import tqdm
+
+#  -- custom modules  --
 from src.utils.grid_utils import Grid
 import src.data_src.point_data_sources as pds
 import src.data_src.gridded_data_sources as gds
 from src.utils.data_utils import DataMapping
 
+# setting up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+#########################################################################
 # %% Point data sources
 def load_point_data_source(filepath, secondary_id, retracker = 'LARM-smoothed'):
     """Load point data source based on secondary_id."""
@@ -116,6 +124,7 @@ def split_by_fraction(dataset, fraction, equalization_id):
 
     return subset, remaining
 
+#########################################################################
 # %% run
 if __name__ == "__main__":
     logger.info("Starting dataset creation...")

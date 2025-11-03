@@ -1,8 +1,19 @@
-from .base import PointDataSource
-import pandas as pd
+# --- coding: utf-8 ---
+# AEM_AWI.py
+"""AEM_AWI point data source implementation."""
+
+# -- built-in modules --
 from pathlib import Path
 
+# -- third-party modules --
+import pandas as pd
+
+# -- custom modules --
+from .base import PointDataSource
+
+##############################################################################################
 class AEM_AWI_ICEBIRD(PointDataSource):
+    """AEM_AWI ICEBIRD point data source."""
     def __init__(self, files):
         self.files = files
 
@@ -31,6 +42,7 @@ class AEM_AWI_ICEBIRD(PointDataSource):
 
 
 class AEM_AWI_PAMARCMIP(PointDataSource):
+    """AEM_AWI PAMARCMIP point data source."""
     def __init__(self, files):
         self.files = files
 

@@ -5,17 +5,14 @@ input_data:
   secondary_ids: ['2020-2021', '2021-2022']
 
 output:
-  model_path: data/processed/models/final/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
+  model_path: data/processed/models/final/ASP_RFR-model_LARM-smoothed_N3.125km_wLatLon.pkl
 
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 't2m','tcwv', 'tclw', 'doy']
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V','lat','lon','doy']
     target_feature: SD_mean
     weight_feature: num_samples
     oob_score: True
     random_state: 42
-  param_file: data/intermediate/CV_results/best_params_final.yaml
+  param_file: data/intermediate/CV_results/best_params_final_noERA5.yaml
   fixed_params: {}
-
-    
-

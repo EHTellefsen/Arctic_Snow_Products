@@ -1,12 +1,20 @@
+# -- coding: utf-8 --
+# base.py
+"""Base class for pixel-based prediction models."""
+
+# -- built-in modules --
 from abc import ABC, abstractmethod
 
+# -- third-party modules --
 import pandas as pd
 import xarray as xr
 import pickle
 from sklearn.metrics import root_mean_squared_error
 
+# -- custom modules --
 from src.data_src.gridded_data_sources.base import GriddedDataSource
 
+#######################################################
 class PixelPredictionModel(ABC):
     """ Abstract base class for pixel-based prediction models. """
     def __init__(self,

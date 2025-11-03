@@ -1,14 +1,22 @@
+# --- coding: utf-8 ---
+# era5.py
+"""ERA5 gridded data source implementation."""
+
+# -- built-in modules --
 from pathlib import Path
 import zipfile
 import tempfile
 
+# -- third-party modules --
 import xarray as xr
 
+# -- custom modules --
 from .base import GriddedDataSource
 
 ##############################################################################################
 # %% ERA5 Scene class
 class ERA5Scene(GriddedDataSource):
+    """ERA5 Scene data source."""
     def __init__(self, filepaths, grid_id='ERA5_polar'):
         if isinstance(filepaths, str):
             filepaths = [filepaths]
@@ -18,12 +26,14 @@ class ERA5Scene(GriddedDataSource):
 
     @classmethod
     def from_files(cls, file_paths, grid_id='ERA5_polar'):
+        """Create an ERA5Scene instance from file paths."""
         instance = cls(file_paths, grid_id=grid_id)
         instance.load()
         return instance
     
     @classmethod
     def from_dir(cls, dir_path, grid_id='ERA5_polar'):
+        """Create an ERA5Scene instance from a directory containing NetCDF files."""
         if isinstance(dir_path, str):
             dir_path = [dir_path]
         
@@ -41,6 +51,7 @@ class ERA5Scene(GriddedDataSource):
     
     @classmethod
     def from_zip(cls, dir_path, grid_id='ERA5_polar'):
+        """Create an ERA5Scene instance from a ZIP archive containing NetCDF files."""
         # !!!Experimental from GPT - needs testing!!!
         if isinstance(dir_path, str):
             dir_path = [dir_path]
@@ -63,6 +74,7 @@ class ERA5Scene(GriddedDataSource):
     
 
     def load(self):
+        """Load ERA5 data from the specified file paths."""
         self.data = xr.open_mfdataset(self.filepaths, 
                                 combine='by_coords',
                                 data_vars = "minimal",
@@ -75,6 +87,7 @@ class ERA5Scene(GriddedDataSource):
 ##############################################################################################
 # %% Loading utilities
 def load_ERA5_data(files, grid):
+    """Load and regrid ERA5 data from given files to the specified grid."""
     era5_ds = ERA5Scene.from_files(files)
     era5_ds.regrid(grid)
     return era5_ds

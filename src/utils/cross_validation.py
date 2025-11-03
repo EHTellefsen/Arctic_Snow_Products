@@ -1,14 +1,22 @@
+# -- coding: utf-8 --
+# cross_validation.py
+"""Module for performing cross-validation with grid search for hyperparameter tuning."""
+
+# -- built-in libraries --
 import yaml
 import multiprocessing as mp
 import pickle
 
+# -- third-party libraries  --
 import pandas as pd
 from tqdm import tqdm
-
 from sklearn.model_selection import ParameterGrid
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 
+#  -- custom modules  --
+
+###########################################################
 class CrossValidation:
     """Class to perform cross-validation with grid search for hyperparameter tuning."""
     def __init__(self, model, model_configs, param_grid):

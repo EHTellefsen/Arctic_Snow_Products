@@ -1,10 +1,18 @@
+# -- coding: utf-8 --
+# perform_RFR_cross_validation.py
+"""Script to perform cross-validation for Random Forest Regression model"""
+
+# -- built-in libraries --
 import yaml
 
+# -- third-party libraries  --
 import pandas as pd
 
+#  -- custom modules  --
 from src.utils.cross_validation import CrossValidation
 from src.models.random_forest_regression import RandomForestRegression
 
+########################################################################
 if __name__ == "__main__":
     # Load configuration
     with open("configs/pipeline_configs/perform_RFR_cross_validation.yaml", 'r') as f:

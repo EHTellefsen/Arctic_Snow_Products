@@ -1,15 +1,23 @@
+# -- coding: utf-8 --
+# base.py
+"""Base class for point data sources."""
+
+# -- built-in modules --
 from abc import ABC, abstractmethod
 
+# -- third-party modules --
 import pandas as pd
 import numpy as np
 from pyproj import Transformer
 from tqdm import tqdm
 
+# -- custom modules --
 from src.utils.bucket_utils import drop_in_bucket_resample
 from src.utils.grid_utils import Grid
-# %%
+
 #########################################################################################################################
 class PointDataSource(ABC):
+    """Base class for point data sources."""
     def __init__(self, primary_id=None, secondary_id=None):
         self.data = None
         self.param_dict = None
@@ -50,6 +58,7 @@ class PointDataSource(ABC):
     
 
     def get_preprocessed_SD_df(self):
+        """Get preprocessed snow depth dataframe."""
         if self.param_dict is None:
             raise ValueError('Param_dict is uninitialized')
         elif self.data is None:
@@ -60,6 +69,7 @@ class PointDataSource(ABC):
 
     # %%
     def resample_bucket(self, target_grid, input_crs = "EPSG:4326", daily=True):
+        """Resample point data into grid buckets defined by target_grid."""
         df = self._preprocess_SD_df(self.data, self.param_dict)
 
         if isinstance(target_grid, str):
@@ -89,19 +99,23 @@ class PointDataSource(ABC):
 # %%
 #########################################################################################################################
 class GriddedPointDataSource:
+    """Class for gridded point data sources."""
     def __init__(self, data, grid):
         self.grid = grid
         self.data = data
 
     # %%
     def to_parquet(self, filepath):
+        """Save the gridded point data to a Parquet file."""
         self.data.to_parquet(filepath, index=False)
 
     def to_csv(self, filepath):
+        """Save the gridded point data to a CSV file."""
         self.data.to_csv(filepath, index=False)
     
     @classmethod
     def load(cls, filepath, grid):
+        """Load a GriddedPointDataSource from a Parquet or CSV file."""
         if filepath.endswith('.parquet'):
             data = pd.read_parquet(filepath)
         elif filepath.endswith('.csv'):
@@ -114,6 +128,7 @@ class GriddedPointDataSource:
     # %%
     @classmethod
     def merge_sources(cls, sources):
+        """Merge multiple GriddedPointDataSource instances into one."""
         if not all(isinstance(source, GriddedPointDataSource) for source in sources):
             raise ValueError("All sources must be GriddedPointDataSource objects.")
         if not all(source.grid == sources[0].grid for source in sources):
@@ -126,6 +141,7 @@ class GriddedPointDataSource:
 
 
     def __add__(self, other):
+        """Combine two GriddedPointDataSource objects by merging their datasets."""
         return self.merge_sources([self, other])
 
 
