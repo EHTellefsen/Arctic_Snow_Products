@@ -7,7 +7,7 @@ import yaml
 
 # -- third-party libraries  --
 import pandas as pd
-
+import numpy as np
 #  -- custom modules  --
 from src.models.random_forest_regression import RandomForestRegression
 
@@ -33,6 +33,6 @@ if __name__ == "__main__":
     train_data = train_data[train_data['primary_id'].isin(config['input_data']['primary_ids']) & train_data['secondary_id'].isin(config['input_data']['secondary_ids'])]
 
     # Initialize and create model
-    model = RandomForestRegression(model_params=model_params, **model_configs)
-    model.fit(train_data)
+    model = RandomForestRegression(model_params=model_params,**model_configs)
+    model = model.fit(train_data)
     model.save(config['output']['model_path'])

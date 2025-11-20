@@ -51,7 +51,7 @@ if __name__ == "__main__":
     logger.info("Mapping CETB and ERA5 files...")
     cetb_mapping = DataMapping(config['CETB']['directory'], 'CETB')
     era5_mapping = DataMapping(config['ERA5']['directory'], 'ERA5')
-
+    
     # date range to process
     date_range = np.arange(config['dates']['start'], config['dates']['end'], timedelta(days=1))
 
@@ -84,16 +84,9 @@ if __name__ == "__main__":
         # Preparing NetCDF output
         ds = prediction.data
 
-        # Adding coordinates and attributes
-        trf = Transformer.from_crs("EPSG:6931", "EPSG:4326", always_xy=True)
-        lat, lon = trf.transform(ds['x'].values, ds['y'].values)
-        lat_grid, lon_grid = np.meshgrid(lat, lon)
-
         # Assigning coordinates and attributes
         ds = ds.assign_coords(x=ds['x'].astype('int32'))
         ds = ds.assign_coords(y=ds['y'].astype('int32'))
-        ds = ds.assign_coords(lat=(('y','x'), lat_grid.astype('float32')))
-        ds = ds.assign_coords(lon=(('y','x'), lon_grid.astype('float32')))
         ds['sd'] = ds.sd.astype('float32')
         ds['crs'] = xr.DataArray(np.int32(0))
 
@@ -111,4 +104,4 @@ if __name__ == "__main__":
         ds.to_netcdf(f"{config['output']['directory']}/{config['output']['name'].format(date=str(date.date()))}", 
                      format='NETCDF4_CLASSIC',
                      encoding = {var: {"zlib": True, "complevel": 4}
-            for var in ["sd", "lat", "lon", "x", "y"]})
+            for var in ["sd", "x", "y"]})

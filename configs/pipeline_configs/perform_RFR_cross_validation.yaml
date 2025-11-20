@@ -6,25 +6,25 @@ n_jobs: 4
 random_state: 42
 
 input_data:
-  train_data_path: data/intermediate/datasets/EASE2_LARM-smoothed_N3.125km_v1.1/ASP_train.parquet
-  primary_ids: ['C2I']
-  secondary_ids: ['2020-2021', '2021-2022']
+  train_data_path: data/intermediate/datasets/EASE2_OIB_N3.125km/ASP_train_OIB.parquet
+  primary_ids: ['OIB']
+  secondary_ids: ['IDCSI4']
 
 output:
-  cv_results_path: data/intermediate/CV_results/cv_results_final_noERA5.pkl
-  performance_cube_path: data/intermediate/CV_results/performance_cube_final_noERA5.nc
-  best_params_path: data/intermediate/CV_results/best_params_final_noERA5.yaml
+  cv_results_path: data/intermediate/CV_results_OIB/cv_results.pkl
+  performance_cube_path: data/intermediate/CV_results_OIB/performance_cube.nc
+  best_params_path: data/intermediate/CV_results_OIB/best_params.yaml
 
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 'doy']
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V']
     target_feature: SD_mean
     weight_feature: num_samples
     oob_score: False
     random_state: 42
   param_grid:
     n_estimators: [30] 
-    max_depth: [10, 13, 15, 17, 20]
-    min_samples_split: [400]
-    min_samples_leaf: [50, 100, 200, 400]
-    max_features: [0.25, 0.5, 0.75]
+    max_depth: [10,11,12,13,14,15,16,17,18,19,20]
+    min_samples_split: [20,25,30,35,40,45,50,60]
+    min_samples_leaf: [1,2,3,4,5,6,7,8,9,10]
+    max_features: [5,6,7]

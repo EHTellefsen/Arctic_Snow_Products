@@ -25,6 +25,8 @@ class DataMapping:
             self._map_ERA5(directory)
         elif dataset=='CETB':
             self._map_CETB(directory)
+        elif dataset=='ASP':
+            self._map_ASP(directory)
         else:
             raise ValueError('dateset needs to be either ERA5 or CETB')
 
@@ -75,6 +77,24 @@ class DataMapping:
                                                                 full_path]
                     except (IndexError, ValueError):
                         continue
+
+    def _map_ASP(self, directory):
+        """Map ASP data files in the given directory."""
+        for root, _, files in os.walk(directory):
+            for file in files:
+                if file.endswith('.nc'):
+                    channel = 'sd'
+                try:
+                    # extract date assuming format ASP_channel_YYYY-MM-DD.nc
+                    date_str = file.split('_')[-1].replace('.nc','')
+                    date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                    full_path = os.path.join(root, file)
+                    self.mapping.loc[len(self.mapping)] = [pd.Timestamp(date),
+                                                                channel,
+                                                                full_path]
+                except (IndexError, ValueError):
+                    continue
+
 
     # %% Querying utilities
     def get_by_channel(self, channel):

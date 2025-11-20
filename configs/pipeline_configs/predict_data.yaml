@@ -3,12 +3,12 @@ grid: EASE2_N3.125km
 output_extent: [-4500000, -4500000, 4500000, 4500000]
 
 ERA5:
-  directory: D:/ASP/Data/ERA5_6hourly_pred-param
+  directory: E:/ASP/Data/ERA5_6hourly_pred-param
   channels:
     - siconc
 
 CETB:
-  directory: D:/ASP/Data/CETB_AMSR2_M
+  directory: E:/ASP/Data/nsidc-0630_CETB_AMSR2_M_nov-apr
   channels:
     - 6.9H
     - 6.9V
@@ -33,8 +33,8 @@ output:
     x: 720
 
 dates:
-  start: 2012-11-01
-  end: 2025-05-01
+  start: 2019-10-31
+  end: 2020-05-01
 
 mask:
   channel: siconc
