@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # mapping prediction files
     prediction_mapping = DataMapping(config['predictions_directory'], 'ASP')
-    date_range = pd.date_range(start=config['dates']['start'], end=config['dates']['end'], freq='D')
+    date_range = pd.date_range(start=config['time_period']['start'], end=config['time_period']['end'], freq='D')
 
     for year in tqdm(range(date_range.year.min(), date_range.year.max()+1), desc="Aggregating yearly data", unit="years"):
         for month in range(1, 13):

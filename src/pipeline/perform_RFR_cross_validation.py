@@ -35,6 +35,11 @@ if __name__ == "__main__":
     train_data = pd.read_parquet(config['input_data']['train_data_path'])  # Load your training data as a pandas DataFrame
     train_data = train_data[train_data['primary_id'].isin(config['input_data']['primary_ids']) & train_data['secondary_id'].isin(config['input_data']['secondary_ids'])]
 
+    # Downsample training data if specified
+    if 'downsample_fraction' in config:
+        fraction = config['downsample_fraction']
+        train_data = train_data.sample(frac=fraction, random_state=config['random_state']).reset_index(drop=True)
+        
     # Perform grid search with cross-validation
     cross_validator = cross_validator.temporal_split_grid_search(train_data, 'time', n_splits=cv_folds, nproc=config['n_jobs'])
 

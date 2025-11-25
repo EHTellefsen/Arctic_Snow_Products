@@ -1,7 +1,7 @@
 
 predictions_directory: "./data/processed/predictions/"
-output_directory: "./data/processed/predictions_monthly-mean/"
+output_directory: "./data/processed/predictions_v1.2_monthly-mean/"
 
-dates:
+time_period:
   start: "2012-11-01"
   end: "2025-05-01"

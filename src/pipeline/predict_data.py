@@ -13,7 +13,6 @@ import logging
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
-from pyproj import Transformer
 import xarray as xr
 
 #  -- custom modules  --
@@ -53,7 +52,7 @@ if __name__ == "__main__":
     era5_mapping = DataMapping(config['ERA5']['directory'], 'ERA5')
     
     # date range to process
-    date_range = np.arange(config['dates']['start'], config['dates']['end'], timedelta(days=1))
+    date_range = np.arange(config['time_period']['start'], config['time_period']['end'], timedelta(days=1))
 
     # processing data
     logger.info("Processing data...")

@@ -9,12 +9,12 @@ output:
 
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V','doy']
-    target_feature: SD_max
-    weight_feature: num_samples
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 'doy']
+    target_feature: SD_mean
+    weight_feature: weights
     oob_score: True
     random_state: 42
-  param_file: data/intermediate/CV_results/best_params.yaml
+  param_file: data/intermediate/CV_results_C2I_v1.2/best_params.yaml
   fixed_params: {
   }
   

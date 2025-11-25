@@ -1,5 +1,5 @@
 # -- coding: utf-8 --
-# create_training_dataset.py
+# create_dataset.py
 """Script to create training dataset by merging point data sources with gridded data sources."""
 
 # -- built-in libraries --
@@ -9,6 +9,7 @@ import logging
 
 # -- third-party libraries  --
 import xarray as xr
+import pandas as pd
 from tqdm import tqdm
 
 #  -- custom modules  --
@@ -28,7 +29,9 @@ def load_point_data_source(filepath, secondary_id, retracker = 'LARM-smoothed'):
     if secondary_id in ['2020-2021', '2021-2022']:
         return pds.C2I(filepath, secondary_id=secondary_id, retracker=retracker)
     elif secondary_id == 'IDCSI4':
-        return pds.OIB(filepath)
+        return pds.OIB_IDCSI4(filepath)
+    elif secondary_id == 'QuickLook':
+        return pds.OIB_QL(filepath)
     elif secondary_id == 'ICEBIRD':
         return pds.AEM_AWI_ICEBIRD(filepath)
     elif secondary_id == 'PAMARCMIP':
@@ -91,44 +94,11 @@ def sample_from_ERA5(point_source, gridded_source):
     
     return pds.GriddedPointDataSource(sampled_df, point_source.grid)
 
-
-# %% splits
-def split_by_period(dataset, start_date, end_date):
-    """Split dataset by time period."""
-    mask = (dataset.data['time'] >= start_date) & (dataset.data['time'] < end_date)
-    subset = pds.GriddedPointDataSource(dataset.data[mask], dataset.grid)
-    remaining = pds.GriddedPointDataSource(dataset.data[~mask], dataset.grid)
-    return subset, remaining
-
-
-def split_by_fraction(dataset, fraction, equalization_id):
-    """Split dataset by fraction, optionally equalizing by secondary ID."""
-    if equalization_id is not None:
-        # Get unique secondary IDs
-        ids = dataset.data[equalization_id].unique()
-        val_indices = []
-        for id in ids:
-            id_mask = dataset.data[equalization_id] == id
-            id_data = dataset.data[id_mask]
-            id_val_size = int(len(id_data) * fraction)
-            id_val_sample = id_data.sample(n=id_val_size, random_state=42)
-            val_indices.extend(id_val_sample.index.tolist())
-            
-        subset = pds.GriddedPointDataSource(dataset.data.loc[val_indices], dataset.grid)
-        remaining = pds.GriddedPointDataSource(dataset.data.drop(index=val_indices), dataset.grid)
-    else:
-        subset_size = int(len(dataset.data) * fraction)
-        subset_data = dataset.data.sample(n=subset_size, random_state=42)
-        subset = pds.GriddedPointDataSource(subset_data, dataset.grid)
-        remaining = pds.GriddedPointDataSource(dataset.data.drop(index=subset_data.index), dataset.grid)
-
-    return subset, remaining
-
 #########################################################################
 # %% run
 if __name__ == "__main__":
     logger.info("Starting dataset creation...")
-    config_path = "configs/pipeline_configs/create_training_dataset.yaml"
+    config_path = "configs/pipeline_configs/create_dataset.yaml"
     config = yaml.safe_load(open(config_path, "r"))
 
     target_grid = Grid.from_predefined(config['grid'])
@@ -152,14 +122,21 @@ if __name__ == "__main__":
 
     # %% match to gridded data sources
     # CETB
+    unique_dates = gridded_point_data.data['time'].dt.date.unique()
+    needed_dates = list(set(list(unique_dates) + list(unique_dates+pd.Timedelta(days=1)) + list(unique_dates-pd.Timedelta(days=1))))
+
     logger.info("Matching to CETB data...")
     CETB_mapping = DataMapping(config['CETB']['directory'], dataset='CETB')
     for i, channel in enumerate(config['CETB']['channels']):
         logger.info(f"Processing CETB channel: {channel}" + f" ({i+1}/{len(config['CETB']['channels'])})")
         files = CETB_mapping.get_by_channel(channel)['filename'].tolist()
-        scene = gds.CETBScene.from_files(files)
+        files = CETB_mapping.get_by_channel(channel)
+
+        needed_files = files[pd.to_datetime(files['date']).isin(pd.to_datetime(needed_dates))]['filename'].tolist()
+        scene = gds.CETBScene.from_files(needed_files)
         match = sample_from_CETB(gridded_point_data, scene)
         gridded_point_data.data[channel] = match.data[channel]
+
 
     # ERA5
     logger.info("Matching to ERA5 data...")
@@ -171,28 +148,11 @@ if __name__ == "__main__":
         match = sample_from_ERA5(gridded_point_data, scene)
         gridded_point_data.data[channel] = match.data[channel]
 
+    # save full dataset
     logger.info("saving full dataset...")
-    full_dataset = gridded_point_data
-    full_dataset.to_parquet(Path(config['datasets']['full']['save_directory']) / Path(config['datasets']['full']['name']))
-
-    # %% dataset splits
-    logger.info("Splitting dataset...")
-
-    remaining = full_dataset
-    # Iterate over datasets to create splits
-    for dataset in config['datasets'].keys():
-        if dataset not in ['full', 'train']:
-            # split according to config
-            ds = config['datasets'][dataset]
-            if 'split_type' in ds and ds['split_type'] == 'periodic':
-                subset, remaining = split_by_period(remaining, ds['period']['start'], ds['period']['end'])
-            elif 'split_type' in ds and ds['split_type'] == 'fractional':
-                subset, remaining = split_by_fraction(remaining, ds['split_params']['fraction'], equalization_id=ds['split_params']['equalization_id'])
-            else:
-                raise ValueError(f"Unsupported split type for dataset {dataset}")
-
-            # save subset
-            subset.to_parquet(Path(ds['save_directory']) / Path(ds['name']))
-
-    # Save remaining as training dataset
-    remaining.to_parquet(Path(config['datasets']['train']['save_directory']) / Path(config['datasets']['train']['name']))
+    full_dataset = gridded_point_data.data
+    full_dataset = full_dataset.dropna(subset=config['CETB']['channels'][0])
+    full_dataset = full_dataset[(full_dataset['time']>=pd.to_datetime(config['time_period']['start'])) & (full_dataset['time']<pd.to_datetime(config['time_period']['end']))]
+    full_dataset = full_dataset.reset_index(drop=True)
+    
+    full_dataset.to_parquet(Path(config['output_dataset']['save_directory']) / Path(config['output_dataset']['name']))

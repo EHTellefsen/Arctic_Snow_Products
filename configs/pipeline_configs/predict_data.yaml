@@ -23,7 +23,7 @@ CETB:
     - 89H
     - 89V
 
-model_checkpoint: ./data/processed/models/final/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
+model_checkpoint: ./data/processed/models/v1.2/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
 
 output:
   directory: ./data/processed/predictions
@@ -32,9 +32,9 @@ output:
     y: 720
     x: 720
 
-dates:
-  start: 2019-10-31
-  end: 2020-05-01
+time_period:
+  start: 2012-10-31
+  end: 2025-05-01
 
 mask:
   channel: siconc

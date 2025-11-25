@@ -1,0 +1,26 @@
+
+directory: ./data/intermediate/datasets/EASE2_LARM_3.125km_v1.1
+input_dataset: "ASTD_v1.0-full.parquet"
+
+allowed_primary_ids:
+  - C2I
+
+allowed_secondary_ids:
+  - 2020-2021
+  - 2021-2022
+
+datasets:
+  train:
+    save_directory: "ASTD_v1.0-train.parquet"
+test_sets:
+    november_2020:
+      time_period:
+        start: '2020-11-01'
+        end: '2020-12-01'
+      save_directory: "ASTD_v1.0-test_nov2022.parquet"
+
+    april_2022:
+      time_period:
+        start: '2022-04-01'
+        end: '2022-05-01'
+      save_directory: "ASTD_v1.0-test_apr2022.parquet"

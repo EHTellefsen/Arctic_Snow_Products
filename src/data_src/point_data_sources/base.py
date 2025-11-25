@@ -139,7 +139,6 @@ class GriddedPointDataSource:
         combined_data = pd.concat([source.data for source in sources], ignore_index=True)
         return cls(combined_data, sources[0].grid)
 
-
     def __add__(self, other):
         """Combine two GriddedPointDataSource objects by merging their datasets."""
         return self.merge_sources([self, other])
