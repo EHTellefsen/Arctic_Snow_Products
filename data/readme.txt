@@ -25,7 +25,7 @@ data
 	├───processed
 	│   ├───models
 	│   ├───predictions
-	│   └───predictions_monthly-mean
+	│   └───predictions_aggregated
 	│
 	├───intermediate
 	│   ├───CV_results
