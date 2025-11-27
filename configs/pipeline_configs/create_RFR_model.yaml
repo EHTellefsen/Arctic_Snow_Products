@@ -1,6 +1,6 @@
 
 input_data:
-  train_data_paths: data/intermediate/datasets/EASE2_LARM-smoothed_N3.125km_v1.1/ASP_train.parquet
+  train_data_paths: data/intermediate/datasets_final/LARM/EASE2.0_N3.125km/ASTD_v1.0-train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
