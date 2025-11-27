@@ -4,7 +4,7 @@
 predictions_directory: "data/processed/predictions/"
 
 # Output configuration for the aggregated monthly mean files
-output_directory: "data/processed/predictions_monthly-mean/"
+output_directory: "data/processed/predictions_aggregated/"
 
 # Time period for which to aggregate predictions
 time_period:

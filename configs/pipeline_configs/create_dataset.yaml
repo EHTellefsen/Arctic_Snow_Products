@@ -3,7 +3,7 @@ grid: EASE2_N3.125km
 
 # output dataset configuration
 output_dataset:
-  name: "ASTD_v1.0-N3.125km.parquet"
+  name: "ASTD_v1.0-N3.125km-LARM_smoothed.parquet"
   save_directory: data/intermediate/datasets
 
 # Define the time period for which to create the dataset
