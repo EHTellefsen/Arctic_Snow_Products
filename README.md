@@ -1,5 +1,7 @@
 # Arctic Snow product: Daily pan Arctic snow product from passive microwave observations and CRYO2ICE
 
+![img](img.png)
+
 ## Motivation
 Since their inception in the 1970’s, methods for mapping snow depth using passive microwave (PMW) radiometerdata have been desired and developed, since PMW data have a large spatiotemporal extent. With a proper snow depth training set, one might be able to fit a model that can identify the correct snow depth even given complicated local dynamics.
 
