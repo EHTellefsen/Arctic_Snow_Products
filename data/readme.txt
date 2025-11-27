@@ -19,57 +19,58 @@ A few notes:
 
 Except for data folders in "raw" all folders shown in tree will be created when setup.py is run.
 
-├───fig
-│
-├───processed
-│   ├───models
-│   ├───predictions
-│   └───predictions_monthly-mean
-│
-├───intermediate
-│   ├───CV_results
-│   └───datasets
-│
-└───raw
-    ├───AEM-AWI-ICEBIRD_2019
-    │   └───datasets
-    │       ├─── P6_217_ICEBIRD_2019_1904020901_high_snowdepth_V1.tab
-    │       └───...
-    │   
-    ├───AEM-AWI-PAMARCMIP_2017
-    │   └───datasets
-    │       ├─── P5_205_PAMARCMIP_2017_1704021401_sea-ice.tab
-    │       └───...
-    │
-    ├───C2I_SnowDepths
-    │   └───CRYO2ICE_individul_comparison_BaselineE
-    │       ├───2020-2021
-    │       │   ├─── CRYO2ICE_CRYO2ICE_CS_LTA__SIR_SAR_2__20201102T123414_20201102T123933_E001_original_MSS_smooth_BaselineE_LARM_AMSR2_SMLG_MERRA5_mW99_smooth_BaselineE.csv
-    │       │   └───...
-    │       └───2021-2022
-    │   
-    ├───CETB_AMSR2
-    │   ├───2012-2013
-    │   │   ├─── NSIDC0630_SIR_EASE2_N3.125km_GCOMW1_AMSR2_M_36H_20121031_2505230315_v2.0.nc
-    │   │   └───...
-    │   ├───2013-2014
-    │   └───...
-    │   
-    ├───ERA5_all-param_daily_perMonth_1hourly-sample
-    │   ├───2012_11
-    │   │   ├─── 2m_temperature_0_daily-mean.nc
-    │   │   ├─── sea_ice_cover_0_daily-mean.nc
-    │   │   └───...
-    │   ├───2012_12
-    │   └───...
-    │   
-    ├───IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook
-    │   ├───2012_GR_NASA
-    │   │   ├─── OIB_20120314_IDCSI2_ql.txt
-    │   │   └───...
-    │   ├───2013_GR_NASA
-    │   └───...
-    │   
-    └───OIB_IDCSI4
-	├───IDCSI4_20090331.txt
-	└───...
+data
+	├───fig
+	│
+	├───processed
+	│   ├───models
+	│   ├───predictions
+	│   └───predictions_monthly-mean
+	│
+	├───intermediate
+	│   ├───CV_results
+	│   └───datasets
+	│
+	└───raw
+	    ├───AEM-AWI-ICEBIRD_2019
+	    │   └───datasets
+	    │       ├─── P6_217_ICEBIRD_2019_1904020901_high_snowdepth_V1.tab
+	    │       └───...
+	    │   
+	    ├───AEM-AWI-PAMARCMIP_2017
+	    │   └───datasets
+	    │       ├─── P5_205_PAMARCMIP_2017_1704021401_sea-ice.tab
+	    │       └───...
+	    │
+	    ├───C2I_SnowDepths
+	    │   └───CRYO2ICE_individul_comparison_BaselineE
+	    │       ├───2020-2021
+	    │       │   ├─── CRYO2ICE_CRYO2ICE_CS_LTA__SIR_SAR_2__20201102T123414_20201102T123933_E001_original_MSS_smooth_BaselineE_LARM_AMSR2_SMLG_MERRA5_mW99_smooth_BaselineE.csv
+	    │       │   └───...
+	    │       └───2021-2022
+	    │   
+	    ├───CETB_AMSR2
+	    │   ├───2012-2013
+	    │   │   ├─── NSIDC0630_SIR_EASE2_N3.125km_GCOMW1_AMSR2_M_36H_20121031_2505230315_v2.0.nc
+	    │   │   └───...
+	    │   ├───2013-2014
+	    │   └───...
+	    │   
+	    ├───ERA5_all-param_daily_perMonth_1hourly-sample
+	    │   ├───2012_11
+	    │   │   ├─── 2m_temperature_0_daily-mean.nc
+	    │   │   ├─── sea_ice_cover_0_daily-mean.nc
+	    │   │   └───...
+	    │   ├───2012_12
+	    │   └───...
+	    │   
+	    ├───IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook
+	    │   ├───2012_GR_NASA
+	    │   │   ├─── OIB_20120314_IDCSI2_ql.txt
+	    │   │   └───...
+	    │   ├───2013_GR_NASA
+	    │   └───...
+	    │   
+	    └───OIB_IDCSI4
+		├───IDCSI4_20090331.txt
+		└───...
