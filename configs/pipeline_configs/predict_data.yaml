@@ -1,12 +1,18 @@
+# Configuration for predicting snow depth using trained Random Forest Regressor model
+
+# grid specification for the output dataset - see grids.yaml for available options
 grid: EASE2_N3.125km
 
+# Define the spatial extent for predictions in EASE2 coordinates (in meters) - xmin, ymin, xmax, ymax
+# EASE2 N global extent is per default [-9000000, -9000000, 9000000, 9000000]
 output_extent: [-4500000, -4500000, 4500000, 4500000]
 
+# Input data sources configuration; paths should point to local directories where data is stored. 
+# Each data source includes the channels (features) to be used for prediction.
 ERA5:
   directory: E:/ASP/Data/ERA5_6hourly_pred-param
   channels:
     - siconc
-
 CETB:
   directory: E:/ASP/Data/nsidc-0630_CETB_AMSR2_M_nov-apr
   channels:
@@ -23,8 +29,10 @@ CETB:
     - 89H
     - 89V
 
+# Path to the trained Random Forest Regressor model checkpoint
 model_checkpoint: ./data/processed/models/v1.2/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
 
+# Output configuration for the predictions
 output:
   directory: ./data/processed/predictions
   name: ASP_snow_depth_predictions_{date}.nc
@@ -32,10 +40,13 @@ output:
     y: 720
     x: 720
 
+# Time period for which predictions are to be made
 time_period:
   start: 2012-10-31
   end: 2025-05-01
 
+# Sea ice concentration mask configuration
+# Apply a sea ice concentration threshold to mask out low sea ice areas in the predictions
 mask:
   channel: siconc
   threshold: 0.75

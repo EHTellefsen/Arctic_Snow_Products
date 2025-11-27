@@ -1,13 +1,28 @@
+# grid specification for the output dataset - see grids.yaml for available options
 grid: EASE2_N3.125km
 
+# output dataset configuration
 output_dataset:
   name: "ASTD_v1.0-N3.125km.parquet"
   save_directory: ./data/intermediate/data_final/EASE2.0_3.125km
 
+# Define the time period for which to create the dataset
 time_period: 
   start: '2012-08-01'
   end: '2025-05-01'
 
+
+# Input data sources configuration; paths should point to local directories where data is stored. 
+# One or more point_data_sources/secondary_ids can be removed if not needed.
+# Secondary IDs will be used to differentiate between different campaigns or subsets within a data source.
+# Each data source may have its own retracker; set to 'None' if not applicable.
+
+# Available point data sources: C2I, OIB, AEM_AWI
+# Available retrackers for C2I: 'LARM_smoothed', 'LARM'
+# Available retrackers for OIB and AEM_AWI: None
+# Available secondary IDs for C2I: 2020-2021, 2021-2022
+# Available secondary IDs for OIB: IDCSI4, QuickLook
+# Available secondary IDs for AEM_AWI: ICEBIRD, PAMARCMIP
 point_data_sources:
   C2I:
     retracker: 'LARM_smoothed'
@@ -45,7 +60,7 @@ point_data_sources:
         id: PAMARCMIP
         filepath: ./data/raw/AEM-AWI-PAMARCMIP_2017/datasets
 
-
+# dataset location and channels to include from AMSR2
 CETB:
   directory: E:/ASP/Data/nsidc-0630_CETB_AMSR2_M_nov-apr
   channels:
@@ -62,6 +77,7 @@ CETB:
     - 89H
     - 89V
 
+# dataset location and channels to include from ERA5
 ERA5:
   directory: E:/ASP/Data/ERA5_1hourly_all-param_training-period
   channels:

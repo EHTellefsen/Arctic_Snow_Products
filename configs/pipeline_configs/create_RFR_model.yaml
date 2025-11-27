@@ -1,12 +1,18 @@
+# Configuration for creating and saving the final Random Forest Regressor model
 
+# training data configuration
 input_data:
   train_data_paths: data/intermediate/datasets_final/LARM/EASE2.0_N3.125km/ASTD_v1.0-train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
+# output configuration for the trained model
 output:
   model_path: data/processed/models/v1.2/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
 
+# Random Forest Regressor model configuration using best hyperparameters from cross-validation
+# param_file points to the YAML file generated during cross-validation containing the best hyperparameters
+# fixed_params can be used to override any hyperparameters if needed
 model:
   configs:
     input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 'doy']

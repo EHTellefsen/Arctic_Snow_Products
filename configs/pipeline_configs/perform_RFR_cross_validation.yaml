@@ -1,30 +1,38 @@
+# Configuration for performing Random Forest Regressor cross-validation
 
+# Number of cross-validation folds
 cv_folds: 10
 
+# Number of parallel jobs for cross-validation
 n_jobs: 4
 
+# Random seed for reproducibility
 random_state: 42
 
+# Fraction of training data to downsample for quicker CV (set to 1.0 to use all data)
 downsample_fraction: 0.1
 
+# Input and output paths
 input_data:
   train_data_path: data/intermediate/datasets/EASE2_LARM-smoothed_N3.125km_v1.1/ASP_train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
+# Output paths for cross-validation results
 output:
-  cv_results_path: data/intermediate/CV_results_C2I_v1.2/cv_results.pkl
-  performance_cube_path: data/intermediate/CV_results_C2I_v1.2/performance_cube.nc
-  best_params_path: data/intermediate/CV_results_C2I_v1.2/best_params.yaml
+  cv_results_path: data/intermediate/CV_results_C2I_v1.2/cv_results.pkl # Pickle file to store CV results object
+  performance_cube_path: data/intermediate/CV_results_C2I_v1.2/performance_cube.nc # NetCDF file to store performance metrics cube - dimensions: (hyperparameters) x folds
+  best_params_path: data/intermediate/CV_results_C2I_v1.2/best_params.yaml # YAML file to store overall best hyperparameters found during CV
 
+# Random Forest Regressor model configuration and hyperparameter grid for CV
 model:
   configs:
-    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 'doy']
-    target_feature: SD_mean
-    weight_feature: weights
+    input_features: ['6.9H', '6.9V', '10.7H', '10.7V', '18H','18V', '23H', '23V', '36H', '36V', '89H', '89V', 'doy'] # day of year 'doy' added as feature - is hardcoded here
+    target_feature: SD_mean # target variable to predict - mean snow depth
+    weight_feature: weights # feature name in dataset to use for sample weights - feature created durring split from num_samples and latitude
     oob_score: False
     random_state: 42
-  param_grid:
+  param_grid: # Hyperparameter grid for Random Forest Regressor cross-validation
     n_estimators: [30] 
     max_depth: [10,11,12,13,14,15,16,17,18,19,20]
     min_samples_split: [20,25,30,35,40,45,50,60]
