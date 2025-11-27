@@ -14,15 +14,15 @@ downsample_fraction: 0.1
 
 # Input and output paths
 input_data:
-  train_data_path: data/intermediate/datasets/EASE2_LARM-smoothed_N3.125km_v1.1/ASP_train.parquet
+  train_data_path: data/intermediate/datasets/ASTD_v1.0-train.parquet
   primary_ids: ['C2I']
   secondary_ids: ['2020-2021', '2021-2022']
 
 # Output paths for cross-validation results
 output:
-  cv_results_path: data/intermediate/CV_results_C2I_v1.2/cv_results.pkl # Pickle file to store CV results object
-  performance_cube_path: data/intermediate/CV_results_C2I_v1.2/performance_cube.nc # NetCDF file to store performance metrics cube - dimensions: (hyperparameters) x folds
-  best_params_path: data/intermediate/CV_results_C2I_v1.2/best_params.yaml # YAML file to store overall best hyperparameters found during CV
+  cv_results_path: data/intermediate/CV_results/cv_results.pkl # Pickle file to store CV results object
+  performance_cube_path: data/intermediate/CV_results/performance_cube.nc # NetCDF file to store performance metrics cube - dimensions: (hyperparameters) x folds
+  best_params_path: data/intermediate/CV_results/best_params.yaml # YAML file to store overall best hyperparameters found during CV
 
 # Random Forest Regressor model configuration and hyperparameter grid for CV
 model:

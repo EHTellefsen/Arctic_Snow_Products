@@ -10,11 +10,11 @@ output_extent: [-4500000, -4500000, 4500000, 4500000]
 # Input data sources configuration; paths should point to local directories where data is stored. 
 # Each data source includes the channels (features) to be used for prediction.
 ERA5:
-  directory: E:/ASP/Data/ERA5_6hourly_pred-param
+  directory: data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
   channels:
     - siconc
 CETB:
-  directory: E:/ASP/Data/nsidc-0630_CETB_AMSR2_M_nov-apr
+  directory: data/raw/CETB_AMSR2
   channels:
     - 6.9H
     - 6.9V
@@ -30,11 +30,11 @@ CETB:
     - 89V
 
 # Path to the trained Random Forest Regressor model checkpoint
-model_checkpoint: ./data/processed/models/v1.2/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
+model_checkpoint: data/processed/models/ASP_RFR-model_LARM-smoothed_N3.125km.pkl
 
 # Output configuration for the predictions
 output:
-  directory: ./data/processed/predictions
+  directory: data/processed/predictions
   name: ASP_snow_depth_predictions_{date}.nc
   chunk_size:
     y: 720

@@ -4,7 +4,7 @@ grid: EASE2_N3.125km
 # output dataset configuration
 output_dataset:
   name: "ASTD_v1.0-N3.125km.parquet"
-  save_directory: ./data/intermediate/data_final/EASE2.0_3.125km
+  save_directory: data/intermediate/datasets
 
 # Define the time period for which to create the dataset
 time_period: 
@@ -29,40 +29,40 @@ point_data_sources:
     secondary_id:
       2020-2021: 
         id: 2020-2021
-        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
+        filepath: data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2020-2021
       2021-2022: 
         id: 2021-2022
-        filepath: ./data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
+        filepath: data/raw/C2I_SnowDepths/CRYO2ICE_individul_comparison_BaselineE/2021-2022
   OIB:
     retracker: None
     secondary_id:
       IDCSI4: 
         id: IDCSI4
-        filepath: ./data/raw/OIB_IDCSI4
+        filepath: data/raw/OIB_IDCSI4
       QuickLook: 
         id: QuickLook
         filepath: 
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2012_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2013_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2014_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2015_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2016_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2017_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2018_GR_NASA
-        - ./data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2019_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2012_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2013_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2014_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2015_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2016_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2017_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2018_GR_NASA
+        - data/raw/IceBridge_Sea_Ice_Freeboard_SnowDepth_and_Thickness_QuickLook/2019_GR_NASA
   AEM_AWI:
     retracker: None
     secondary_id:
       ICEBIRD: 
         id: ICEBIRD
-        filepath: ./data/raw/AEM-AWI-ICEBIRD_2019/datasets
+        filepath: data/raw/AEM-AWI-ICEBIRD_2019/datasets
       PAMARCMIP: 
         id: PAMARCMIP
-        filepath: ./data/raw/AEM-AWI-PAMARCMIP_2017/datasets
+        filepath: data/raw/AEM-AWI-PAMARCMIP_2017/datasets
 
 # dataset location and channels to include from AMSR2
 CETB:
-  directory: E:/ASP/Data/nsidc-0630_CETB_AMSR2_M_nov-apr
+  directory: data/raw/CETB_AMSR2
   channels:
     - 6.9H
     - 6.9V
@@ -79,7 +79,7 @@ CETB:
 
 # dataset location and channels to include from ERA5
 ERA5:
-  directory: E:/ASP/Data/ERA5_1hourly_all-param_training-period
+  directory: data/raw/ERA5_all-param_daily_perMonth_1hourly-sample
   channels:
     - u10
     - v10
@@ -101,9 +101,3 @@ ERA5:
     - istl2
     - istl3
     - istl4
-
-
-
-
-
-

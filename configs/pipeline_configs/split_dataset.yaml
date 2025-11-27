@@ -1,7 +1,7 @@
 
 # Configuration for splitting the dataset into training and testing sets
-input_directory: ./data/intermediate/datasets_final/LARM_smoothed/EASE2.0_N3.125km
-output_directory: ./data/intermediate/datasets_final/LARM_smoothed/EASE2.0_N3.125km
+input_directory: data/intermediate/datasets
+output_directory: data/intermediate/datasets
 input_dataset: "ASTD_v1.0-N3.125km-LARM_smoothed.parquet"
 
 # Specify which primary and secondary IDs to include in the split

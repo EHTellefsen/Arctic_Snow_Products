@@ -1,10 +1,10 @@
 # Configuration for aggregating predicted snow depth data into monthly means
 
 # Input configuration for the directory containing prediction files
-predictions_directory: "./data/processed/predictions/"
+predictions_directory: "data/processed/predictions/"
 
 # Output configuration for the aggregated monthly mean files
-output_directory: "./data/processed/predictions_v1.2_monthly-mean/"
+output_directory: "data/processed/predictions_monthly-mean/"
 
 # Time period for which to aggregate predictions
 time_period:
