@@ -1,3 +1,5 @@
+## ERA5 variable dictionary mapping variable codes to filenames and long names
+
 u10:
   filename: 10m_u_component_of_wind_stream-oper_daily-mean.nc
   long_name: 10m_u_component_of_wind
